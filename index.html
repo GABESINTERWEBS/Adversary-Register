@@ -1,0 +1,2188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Register of Adversaries</title>
+  <meta name="color-scheme" content="dark light" />
+
+  <!-- Stark serif + cursive (legible) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Petit+Formal+Script&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* AHS-poster palette: black/white, razor greys, one bright accent */
+      --bg:#050507;
+      --panel:#0b0b0f;
+      --ink:#f6f6f8;
+      --muted:#b7b7c3;
+      --faint:#7a7a8a;
+
+      --line:rgba(255,255,255,.09);
+      --line2:rgba(255,255,255,.14);
+
+      --accent:#ff1a3d;     /* blood-red accent */
+      --accent2:#ffffff;    /* monochrome support */
+
+      --shadow: 0 26px 90px rgba(0,0,0,.66);
+      --shadow2: 0 12px 46px rgba(0,0,0,.52);
+
+      --radius:22px;
+      --radius2:16px;
+
+      --serif: "Crimson Pro", ui-serif, Georgia, serif;
+      --script: "Petit Formal Script", ui-serif, Georgia, serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--serif);
+      color: var(--ink);
+      background:
+        radial-gradient(900px 540px at 12% -10%, rgba(255,255,255,.05), transparent 58%),
+        radial-gradient(1100px 650px at 92% 0%, rgba(255,26,61,.12), transparent 62%),
+        radial-gradient(900px 680px at 55% 115%, rgba(255,255,255,.03), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.02), transparent 34%),
+        var(--bg);
+      letter-spacing:.18px;
+      font-size: 16px;
+      overflow-x:hidden;
+    }
+
+    /* Architectural ribbons: MONO + RED only */
+    .ribbon{
+      position: fixed;
+      inset: -130px -130px auto auto;
+      width: 560px;
+      height: 560px;
+      opacity: .85;
+      pointer-events:none;
+      z-index:0;
+      background:
+        radial-gradient(closest-side, rgba(255,26,61,.18), transparent 66%),
+        radial-gradient(closest-side, rgba(255,255,255,.07), transparent 72%),
+        conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.06), rgba(255,255,255,.0));
+      border-radius: 62% 38% 55% 45% / 52% 48% 52% 48%;
+      transform: rotate(16deg);
+      box-shadow: 0 70px 140px rgba(0,0,0,.40);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .ribbon2{
+      position: fixed;
+      inset: auto auto -180px -160px;
+      width: 680px;
+      height: 680px;
+      opacity: .70;
+      pointer-events:none;
+      z-index:0;
+      background:
+        radial-gradient(closest-side, rgba(255,255,255,.06), transparent 64%),
+        radial-gradient(closest-side, rgba(255,26,61,.12), transparent 70%),
+        conic-gradient(from 90deg, rgba(255,255,255,.0), rgba(255,255,255,.05), rgba(255,255,255,.0));
+      border-radius: 48% 52% 40% 60% / 45% 48% 52% 55%;
+      transform: rotate(-14deg);
+      border: 1px solid rgba(255,255,255,.05);
+      box-shadow: 0 60px 140px rgba(0,0,0,.40);
+    }
+
+    /* Subtle film-grain */
+    .grain{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      z-index: 0;
+      opacity: .06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+
+    .wrap{
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 34px 18px 58px;
+      position:relative;
+      z-index:1;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom: 16px;
+    }
+
+    h1{
+      margin:0;
+      font-family: var(--script);
+      font-size: clamp(28px, 3.1vw, 46px);
+      font-weight: 400;
+      line-height:1.1;
+      text-decoration: underline;
+      text-underline-offset: 12px;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(255,26,61,.60);
+    }
+
+    .sub{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14.7px;
+      line-height:1.65;
+      max-width: 880px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border:1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.03);
+      box-shadow: var(--shadow2);
+      font-size: 13px;
+      color: var(--muted);
+      white-space:nowrap;
+      backdrop-filter: blur(10px);
+    }
+    .dot{
+      width:9px;height:9px;border-radius:99px;
+      background: linear-gradient(135deg, var(--accent), rgba(255,255,255,.85));
+      box-shadow: 0 0 0 4px rgba(255,26,61,.10);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.08fr 1fr;
+      gap: 14px;
+      align-items: start;
+      margin-top: 14px;
+    }
+    .stack{
+      display:grid;
+      grid-template-rows: auto auto;
+      gap: 14px;
+    }
+    @media (max-width: 1020px){
+      header{ flex-direction:column; align-items:flex-start; }
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      border-radius: var(--radius);
+      overflow:hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018)),
+        radial-gradient(820px 280px at 22% 0%, rgba(255,26,61,.10), transparent 62%),
+        radial-gradient(820px 280px at 95% 18%, rgba(255,255,255,.05), transparent 62%);
+      backdrop-filter: blur(12px);
+      position: relative;
+    }
+
+    /* Court Seal watermark */
+    .seal{
+      position:absolute;
+      inset:auto -40px -60px auto;
+      width: 460px;
+      height: 460px;
+      opacity: .10;
+      transform: rotate(-9deg);
+      pointer-events:none;
+      filter: drop-shadow(0 22px 60px rgba(0,0,0,.55));
+    }
+
+    .hd{
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background: rgba(0,0,0,.18);
+    }
+    .hd h2{
+      margin:0;
+      font-family: var(--serif);
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing:.36px;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 7px;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(255,26,61,.45);
+    }
+    .hint{
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--faint);
+    }
+
+    .bd{ padding: 14px 16px 16px; }
+
+    .footerNote{
+      padding: 12px 16px 16px;
+      color: var(--faint);
+      font-size: 13.2px;
+      border-top: 1px solid var(--line);
+      background: rgba(0,0,0,.16);
+      line-height: 1.55;
+    }
+
+    label{
+      display:block;
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 6px;
+      font-weight: 800;
+    }
+
+    input, select, textarea{
+      width:100%;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line2);
+      outline:none;
+      background: rgba(0,0,0,.30);
+      color: var(--ink);
+      font-size: 15px;
+      transition: border .15s ease, transform .05s ease, box-shadow .15s ease;
+      font-family: var(--serif);
+    }
+    textarea{ min-height: 96px; resize: vertical; }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(255,26,61,.58);
+      box-shadow: 0 0 0 4px rgba(255,26,61,.14);
+    }
+
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    @media (max-width: 580px){ .row{ grid-template-columns: 1fr; } }
+
+    .actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top: 12px; }
+    button{
+      border: 1px solid var(--line2);
+      background: rgba(255,255,255,.05);
+      color: var(--ink);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: 14px;
+      transition: transform .05s ease, border .15s ease, background .15s ease;
+      user-select:none;
+      font-family: var(--serif);
+    }
+    button:hover{ background: rgba(255,255,255,.085); }
+    button:active{ transform: translateY(1px); }
+
+    .primary{
+      border-color: rgba(255,26,61,.58);
+      background: linear-gradient(135deg, rgba(255,26,61,.18), rgba(255,255,255,.06));
+    }
+    .danger{
+      border-color: rgba(255,26,61,.62);
+      background: linear-gradient(135deg, rgba(255,26,61,.16), rgba(0,0,0,.22));
+    }
+    .ghost{
+      background: transparent;
+      border-color: var(--line);
+      color: var(--muted);
+    }
+
+    .lockRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(0,0,0,.20);
+    }
+    .lockRow .left{ display:flex; flex-direction:column; gap:4px; }
+    .lockRow .left .t{
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .35px;
+      color: var(--ink);
+      font-size: 13.5px;
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      text-decoration-color: rgba(255,26,61,.40);
+      text-decoration-thickness: 2px;
+    }
+    .lockRow .left .d{ color: var(--muted); font-size: 13px; }
+    .lockRow .right{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .lockRow input{ max-width: 290px; }
+
+    .locked .bd{ display:none; }
+    .locked .footerNote{ display:none; }
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:end;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(0,0,0,.20);
+    }
+    .grow{ flex:1; min-width: 240px; }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: 13px;
+      white-space:nowrap;
+      font-weight: 800;
+    }
+    .pill b{ color: var(--ink); font-weight: 950; }
+
+    .tableWrap{ overflow:auto; -webkit-overflow-scrolling: touch; }
+    table{ width:100%; border-collapse:separate; border-spacing:0; min-width: 1260px; }
+
+    thead th{
+      position: sticky; top:0; z-index:2;
+      background: linear-gradient(180deg, rgba(8,8,12,.98), rgba(8,8,12,.92));
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line2);
+      padding: 12px 12px;
+      text-align:left;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing:.35px;
+      cursor:pointer;
+      user-select:none;
+      font-weight: 950;
+      font-family: var(--serif);
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      text-decoration-color: rgba(255,255,255,.12);
+      text-decoration-thickness: 2px;
+    }
+    thead th .sort{ font-family: var(--mono); font-size: 11px; color: var(--faint); margin-left: 8px; }
+
+    tbody td{
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 15.2px;
+      color: var(--ink);
+    }
+    tbody tr:hover td{ background: rgba(255,255,255,.03); }
+
+    .muted{ color: var(--muted); }
+    .mono{ font-family: var(--mono); font-size: 12.5px; color: var(--faint); }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      font-size: 13px;
+      color: var(--muted);
+      white-space:nowrap;
+      font-weight: 900;
+    }
+    .tag.good{ border-color: rgba(255,255,255,.18); color: rgba(246,246,248,.92); }
+    .tag.warn{ border-color: rgba(255,26,61,.30); color: rgba(255,255,255,.92); }
+    .tag.bad{ border-color: rgba(255,26,61,.46); color: rgba(255,26,61,.95); }
+
+    .cellActions{ display:flex; gap:8px; flex-wrap:wrap; }
+    .cellActions button{ padding: 7px 10px; border-radius: 12px; font-size: 13.5px; }
+
+    /* Edicts section */
+    .edictsTitle{
+      font-family: var(--script);
+      font-size: 22px;
+      margin: 2px 0 6px;
+      text-decoration: underline;
+      text-underline-offset: 10px;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(255,26,61,.58);
+    }
+    .edictsSub{
+      font-style: italic;
+      color: var(--muted);
+      margin: 0 0 12px;
+      line-height: 1.6;
+    }
+    .edictsItalic{
+      font-style: italic;
+      font-family: var(--serif);
+      color: var(--ink);
+      opacity: .98;
+    }
+
+    .ruleRow{
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(0,0,0,.22);
+      margin-bottom: 10px;
+    }
+    .ruleRow .top{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .ruleRow .name{
+      font-style: italic;
+      font-family: var(--script);
+      font-size: 18px;
+      line-height:1.2;
+      text-decoration: underline;
+      text-underline-offset: 7px;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(255,26,61,.40);
+    }
+    .ruleRow .meta{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .tinyTag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: 12.8px;
+      font-weight: 900;
+      white-space:nowrap;
+    }
+    .tinyTag b{ color: var(--ink); font-weight: 950; }
+    .ruleRow .desc{
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .ruleRow .inputs{
+      display:grid;
+      grid-template-columns: 1fr .7fr .8fr;
+      gap: 10px;
+      align-items:end;
+    }
+    @media (max-width: 880px){
+      .ruleRow .inputs{ grid-template-columns: 1fr; }
+    }
+
+    /* Drafting Mode */
+    .draftBox{
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(0,0,0,.22);
+      margin: 12px 0 4px;
+    }
+    .draftTitle{
+      font-family: var(--script);
+      font-style: italic;
+      font-size: 18px;
+      margin: 0 0 8px;
+      text-decoration: underline;
+      text-underline-offset: 8px;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(255,26,61,.42);
+    }
+    .draftHint{
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.55;
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+    .draftGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 880px){
+      .draftGrid{ grid-template-columns: 1fr; }
+    }
+    .draftOut{
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: rgba(255,255,255,.86);
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.30);
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Modal dossier */
+    .modalBackdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.66);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .modal{
+      width: min(980px, 100%);
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 44px 140px rgba(0,0,0,.72);
+      background:
+        radial-gradient(900px 340px at 18% 0%, rgba(255,26,61,.10), transparent 62%),
+        radial-gradient(900px 340px at 95% 10%, rgba(255,255,255,.05), transparent 64%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.24));
+      overflow:hidden;
+      position:relative;
+    }
+    .modal .seal{
+      inset:auto -70px -90px auto;
+      width: 520px;
+      height: 520px;
+      opacity: .08;
+    }
+    .modalHd{
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+      background: rgba(0,0,0,.18);
+    }
+    .modalTitle{
+      margin:0;
+      font-family: var(--script);
+      font-size: 26px;
+      font-weight: 400;
+      text-decoration: underline;
+      text-underline-offset: 10px;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(255,26,61,.55);
+      line-height: 1.15;
+    }
+    .modalHd .subline{
+      margin-top: 8px;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.6;
+      font-size: 14.6px;
+    }
+    .closeX{ border-radius: 999px; padding: 10px 12px; }
+    .modalBd{ padding: 16px 18px 18px; }
+
+    .dossierGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items:start;
+    }
+    @media (max-width: 820px){
+      .dossierGrid{ grid-template-columns: 1fr; }
+    }
+    .dossierCard{
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(0,0,0,.24);
+    }
+    .dossierCard h3{
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 950;
+      letter-spacing: .35px;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(255,26,61,.32);
+    }
+    .dossierCard p{ margin: 0; color: var(--muted); line-height: 1.65; font-style: italic; }
+    .dossierCard .big{
+      color: var(--ink);
+      font-style: normal;
+      font-size: 16px;
+      line-height: 1.65;
+      margin-top: 4px;
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(8,8,12,.92);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      padding: 10px 12px;
+      display:none;
+      align-items:center;
+      gap:10px;
+      box-shadow: var(--shadow2);
+      color: var(--muted);
+      font-size: 14px;
+      z-index: 120;
+      backdrop-filter: blur(12px);
+    }
+    .toast .spark{
+      width:10px; height:10px; border-radius:99px;
+      background: linear-gradient(135deg, var(--accent), rgba(255,255,255,.85));
+    }
+
+    .kbd{
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--faint);
+      border:1px solid var(--line);
+      border-bottom-color: rgba(255,255,255,.06);
+      padding: 2px 6px;
+      border-radius: 7px;
+      background: rgba(255,255,255,.03);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ribbon"></div>
+  <div class="ribbon2"></div>
+  <div class="grain"></div>
+
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>The Register of Adversaries</h1>
+        <div class="sub">
+          A private index of adversaries, nemeses, foes, and oppressors — with a
+          <b>Violation Meter</b> driven by <i>Gabe’s Edicts and Rules</i>, and automatic ranking.
+          <span class="mono">Ctrl</span>+<span class="mono">K</span> focuses search.
+        </div>
+      </div>
+      <div class="badge" title="Autosaves in your browser">
+        <span class="dot"></span>
+        <span><b id="count">0</b> entries • autosaved</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: Editor + Edicts -->
+      <div class="stack">
+        <!-- Editor -->
+        <section class="card locked" id="editorCard" aria-label="Entry editor">
+          <!-- Seal watermark -->
+          <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+              <radialGradient id="g" cx="50%" cy="45%" r="60%">
+                <stop offset="0%" stop-color="rgba(255,26,61,.30)"/>
+                <stop offset="55%" stop-color="rgba(255,255,255,.10)"/>
+                <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+              </radialGradient>
+            </defs>
+            <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>
+            <circle cx="100" cy="100" r="72" fill="url(#g)" stroke="rgba(255,26,61,.28)" stroke-width="1.2"/>
+            <path d="M100 34
+                     C116 52, 138 62, 160 66
+                     C150 86, 150 114, 160 134
+                     C138 138, 116 148, 100 166
+                     C84 148, 62 138, 40 134
+                     C50 114, 50 86, 40 66
+                     C62 62, 84 52, 100 34Z"
+                  fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.2"/>
+            <path d="M74 108 L100 60 L126 108 L100 140 Z" fill="rgba(255,26,61,.18)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
+            <circle cx="100" cy="100" r="8" fill="rgba(255,255,255,.22)"/>
+          </svg>
+
+          <div class="hd">
+            <h2>Entry Editor</h2>
+            <div class="hint"><span class="kbd">Ctrl</span>+<span class="kbd">K</span> focus search • click a row to open dossier</div>
+          </div>
+
+          <div class="lockRow">
+            <div class="left">
+              <div class="t" id="lockTitle">Edit Mode Locked</div>
+              <div class="d" id="lockDesc">Enter passphrase to add/edit entries (stored locally as a hash).</div>
+            </div>
+            <div class="right">
+              <input id="passphrase" type="password" placeholder="Passphrase…" />
+              <button type="button" class="primary" id="unlockBtn">Unlock</button>
+              <button type="button" class="ghost" id="setPassBtn">Set / Reset Passphrase</button>
+              <button type="button" class="ghost" id="lockBtn" style="display:none;">Lock</button>
+            </div>
+          </div>
+
+          <div class="bd">
+            <form id="entryForm">
+              <div class="row">
+                <div>
+                  <label for="name">Name</label>
+                  <input id="name" name="name" placeholder="e.g., X (formerly known as a friend)" required />
+                </div>
+                <div>
+                  <label for="date">Date of Offence</label>
+                  <input id="date" name="date" type="date" />
+                </div>
+              </div>
+
+              <div class="row">
+                <div>
+                  <label for="offence">Offence Description</label>
+                  <input id="offence" name="offence" placeholder="Betrayal, gaslighting, sabotage, coercion…" required />
+                </div>
+                <div>
+                  <label for="relationship">Current Relationship</label>
+                  <select id="relationship" name="relationship">
+                    <option value="No Contact">No Contact</option>
+                    <option value="Civil">Civil</option>
+                    <option value="Strained">Strained</option>
+                    <option value="Unknown">Unknown</option>
+                    <option value="Active Hostility">Active Hostility</option>
+                    <option value="Reconciled">Reconciled</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div>
+                  <label for="verdict">Verdict</label>
+                  <select id="verdict" name="verdict">
+                    <option value="Under Review">Under Review</option>
+                    <option value="Guilty">Guilty</option>
+                    <option value="Acquitted">Acquitted</option>
+                    <option value="Exiled">Exiled</option>
+                    <option value="Sentenced to Irrelevance">Sentenced to Irrelevance</option>
+                    <option value="Pardoned by Grace">Pardoned by Grace</option>
+                    <option value="Pardoned (Regretful)">Pardoned (Regretful)</option>
+                    <option value="Irredeemable">Irredeemable</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="severity">Declared Severity</label>
+                  <select id="severity" name="severity">
+                    <option value="Minor">Minor</option>
+                    <option value="Notable">Notable</option>
+                    <option value="Grievous">Grievous</option>
+                    <option value="Catastrophic">Catastrophic</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="commentary">Commentary</label>
+                <textarea id="commentary" name="commentary" placeholder="Write the footnote they earned."></textarea>
+              </div>
+
+              <input type="hidden" id="editingId" />
+
+              <div class="actions">
+                <button class="primary" type="submit" id="saveBtn">Add to Register</button>
+                <button class="ghost" type="button" id="clearBtn">Clear</button>
+                <button class="danger" type="button" id="wipeBtn" title="Deletes everything from this browser.">Wipe Register</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="footerNote">
+            Threat scoring is a <b>personal heuristic</b> driven by <i>Gabe’s Edicts and Rules</i>, declared severity, relationship context, and intensity markers.
+          </div>
+        </section>
+
+        <!-- Gabe's Edicts and Rules -->
+        <section class="card locked" id="edictsCard" aria-label="Gabe's Edicts and Rules">
+          <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>
+            <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,26,61,.24)" stroke-width="1.2"/>
+            <path d="M100 38 C120 58, 148 66, 164 70
+                     C152 92, 152 108, 164 130
+                     C148 134, 120 142, 100 162
+                     C80 142, 52 134, 36 130
+                     C48 108, 48 92, 36 70
+                     C52 66, 80 58, 100 38Z"
+                  fill="none" stroke="rgba(255,255,255,.20)" stroke-width="1.2"/>
+            <path d="M82 110 L100 74 L118 110 L100 134 Z" fill="rgba(255,26,61,.14)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
+          </svg>
+
+          <div class="hd">
+            <h2>Gabe’s Edicts and Rules</h2>
+            <div class="hint"><span class="kbd">Edit Mode</span> required to alter statutes</div>
+          </div>
+
+          <div class="lockRow">
+            <div class="left">
+              <div class="t">Statute Book</div>
+              <div class="d"><span class="edictsItalic">Italic, cursive, and binding.</span> These weights shape the Violation Meter.</div>
+            </div>
+            <div class="right">
+              <button type="button" class="ghost" id="resetRulesBtn" data-edit-action="1">Restore Default Edicts</button>
+              <button type="button" class="primary" id="addRuleBtn" data-edit-action="1">Add Edict</button>
+            </div>
+          </div>
+
+          <div class="bd">
+            <div class="edictsTitle">Gabe’s Edicts and Rules</div>
+            <div class="edictsSub">
+              <span class="edictsItalic">“Let the record show: harm has structure.”</span>
+              Edit any edict below — its <b>Weight</b> affects the meter. <b>Pattern</b> is a regex tested against offence + commentary.
+            </div>
+
+            <!-- Drafting Mode (plain-English → keywords → regex) -->
+            <div class="draftBox">
+              <div class="draftTitle">Statute Drafting Mode</div>
+              <p class="draftHint">
+                Write the harm in plain English; extract keywords; generate a regex. Then click <b>Create Edict</b>.
+                <span class="mono">Nothing leaves your browser.</span>
+              </p>
+              <div class="draftGrid">
+                <div>
+                  <label for="draftText">Draft (plain English)</label>
+                  <textarea id="draftText" placeholder="e.g., Public humiliation, ridicule, shaming — especially in group settings."></textarea>
+                </div>
+                <div>
+                  <label for="draftWeight">Suggested Weight</label>
+                  <input id="draftWeight" type="number" min="-20" max="60" step="1" value="12" />
+                  <div style="height:10px"></div>
+                  <label>Generated Pattern (preview)</label>
+                  <div class="draftOut" id="draftOut">—</div>
+                  <div style="height:10px"></div>
+                  <div class="actions" style="margin:0;">
+                    <button type="button" class="ghost" id="draftExtractBtn" data-edit-action="1">Extract Keywords</button>
+                    <button type="button" class="primary" id="draftCreateBtn" data-edit-action="1">Create Edict</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="rulesList"></div>
+          </div>
+
+          <div class="footerNote">
+            Rule math: (severity base) + (relationship modifier) + (edicts hit) + (intensity markers), then a soft-cap to 100.
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT: Table -->
+      <section class="card" aria-label="Register">
+        <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
+          <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.6"/>
+          <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,26,61,.20)" stroke-width="1.2"/>
+          <path d="M70 116 C82 102, 92 78, 100 58
+                   C108 78, 118 102, 130 116
+                   C114 122, 108 132, 100 146
+                   C92 132, 86 122, 70 116Z"
+                fill="rgba(255,26,61,.12)" stroke="rgba(255,255,255,.16)" stroke-width="1"/>
+        </svg>
+
+        <div class="toolbar">
+          <div class="grow">
+            <label for="search" style="margin:0 0 6px;">Search</label>
+            <input id="search" placeholder="Search name, offence, verdict, relationship, commentary…" />
+          </div>
+
+          <div style="min-width:240px;">
+            <label for="filterVerdict" style="margin:0 0 6px;">Filter Verdict</label>
+            <select id="filterVerdict">
+              <option value="">All</option>
+              <option>Under Review</option>
+              <option>Guilty</option>
+              <option>Acquitted</option>
+              <option>Exiled</option>
+              <option>Sentenced to Irrelevance</option>
+              <option>Pardoned by Grace</option>
+              <option>Pardoned (Regretful)</option>
+              <option>Irredeemable</option>
+            </select>
+          </div>
+
+          <div style="min-width:240px;">
+            <label for="sortPreset" style="margin:0 0 6px;">Sort Preset</label>
+            <select id="sortPreset">
+              <option value="rank_desc">Rank: Highest Violation</option>
+              <option value="date_desc">Date: Newest</option>
+              <option value="name_asc">Name: A→Z</option>
+              <option value="verdict_asc">Verdict: A→Z</option>
+            </select>
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" id="exportBtn">Export CSV</button>
+            <button type="button" id="importBtn">Import CSV</button>
+            <input type="file" id="fileInput" accept=".csv,text/csv" hidden />
+          </div>
+        </div>
+
+        <div class="tableWrap">
+          <table role="table" aria-label="Adversary register table">
+            <thead>
+              <tr>
+                <th data-key="rank">Rank <span class="sort" id="sort-rank"></span></th>
+                <th data-key="threat">Violation Meter <span class="sort" id="sort-threat"></span></th>
+                <th data-key="name">Name <span class="sort" id="sort-name"></span></th>
+                <th data-key="offence">Offence <span class="sort" id="sort-offence"></span></th>
+                <th data-key="date">Date <span class="sort" id="sort-date"></span></th>
+                <th data-key="relationship">Relationship <span class="sort" id="sort-relationship"></span></th>
+                <th data-key="verdict">Verdict <span class="sort" id="sort-verdict"></span></th>
+                <th data-key="commentary">Commentary <span class="sort" id="sort-commentary"></span></th>
+                <th data-key="severity">Severity <span class="sort" id="sort-severity"></span></th>
+                <th data-key="signals">Edict Hits <span class="sort" id="sort-signals"></span></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="footerNote">
+          <span class="pill">Showing <b id="showing">0</b> / <b id="total">0</b></span>
+          <span class="pill">Sorted by <b id="sortedBy">rank</b> <b id="sortedDir">↓</b></span>
+          <span class="pill">Edit mode: <b id="editStatus">locked</b></span>
+          <span class="pill">Dossier: click a row • <span class="kbd">Esc</span> closes</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Dossier Modal -->
+  <div class="modalBackdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Case File">
+      <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
+        <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.20)" stroke-width="1.6"/>
+        <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,26,61,.22)" stroke-width="1.2"/>
+        <path d="M100 40 C120 62, 150 70, 164 72
+                 C152 92, 152 108, 164 128
+                 C150 130, 120 138, 100 160
+                 C80 138, 50 130, 36 128
+                 C48 108, 48 92, 36 72
+                 C50 70, 80 62, 100 40Z"
+              fill="rgba(255,26,61,.10)" stroke="rgba(255,255,255,.16)" stroke-width="1.1"/>
+      </svg>
+
+      <div class="modalHd">
+        <div>
+          <h2 class="modalTitle" id="dossierTitle">Case File</h2>
+          <div class="subline" id="dossierSub">—</div>
+        </div>
+        <button class="ghost closeX" id="closeModalBtn" type="button">Close ✕</button>
+      </div>
+      <div class="modalBd">
+        <div class="dossierGrid">
+          <div class="dossierCard">
+            <h3>Verdict</h3>
+            <p class="big" id="dossierVerdict">—</p>
+            <p id="dossierRel">—</p>
+          </div>
+          <div class="dossierCard">
+            <h3>Violation Meter</h3>
+            <p class="big" id="dossierThreat">—</p>
+            <p id="dossierEmojiLine">—</p>
+          </div>
+
+          <div class="dossierCard">
+            <h3>Offence</h3>
+            <p class="big" id="dossierOffence">—</p>
+          </div>
+          <div class="dossierCard">
+            <h3>Commentary</h3>
+            <p class="big" id="dossierCommentary">—</p>
+          </div>
+
+          <div class="dossierCard">
+            <h3>Edict Hits</h3>
+            <p class="big" id="dossierHits">—</p>
+          </div>
+          <div class="dossierCard">
+            <h3>Meta</h3>
+            <p id="dossierMeta" class="big">—</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="spark"></span>
+    <span id="toastMsg">Saved.</span>
+  </div>
+
+<script>
+(() => {
+  // ---------------- Storage Keys ----------------
+  const STORAGE_KEY = "adversary_register_v4_ahsposter";
+  const RULES_KEY   = "adversary_register_rules_v2_ahsposter";
+  const PASS_HASH_KEY = "adversary_register_passhash_v1";
+  const SESSION_UNLOCK_KEY = "adversary_register_unlocked_session_v1";
+
+  // ---------------- State ----------------
+  /** @type {{id:string,name:string,offence:string,date:string,relationship:string,verdict:string,commentary:string,severity:string,createdAt:number,updatedAt:number}[]} */
+  let entries = [];
+  /** @type {{id:string,title:string,description:string,pattern:string,weight:number,domain:string,enabled:boolean}[]} */
+  let rules = [];
+
+  let sortKey = "rank";
+  let sortDir = "desc";
+  let searchText = "";
+  let filterVerdict = "";
+
+  // ---------------- DOM ----------------
+  const $ = (id) => document.getElementById(id);
+
+  const editorCard = $("editorCard");
+  const edictsCard = $("edictsCard");
+  const editStatus = $("editStatus");
+
+  const lockTitle = $("lockTitle");
+  const lockDesc = $("lockDesc");
+  const passphrase = $("passphrase");
+  const unlockBtn = $("unlockBtn");
+  const setPassBtn = $("setPassBtn");
+  const lockBtn = $("lockBtn");
+
+  const form = $("entryForm");
+  const tbody = $("tbody");
+  const count = $("count");
+
+  const showing = $("showing");
+  const total = $("total");
+  const sortedBy = $("sortedBy");
+  const sortedDirEl = $("sortedDir");
+
+  const search = $("search");
+  const filterVerdictEl = $("filterVerdict");
+  const sortPreset = $("sortPreset");
+
+  const nameEl = $("name");
+  const dateEl = $("date");
+  const offenceEl = $("offence");
+  const relationshipEl = $("relationship");
+  const verdictEl = $("verdict");
+  const severityEl = $("severity");
+  const commentaryEl = $("commentary");
+  const editingIdEl = $("editingId");
+  const saveBtn = $("saveBtn");
+
+  const clearBtn = $("clearBtn");
+  const wipeBtn = $("wipeBtn");
+  const exportBtn = $("exportBtn");
+  const importBtn = $("importBtn");
+  const fileInput = $("fileInput");
+
+  const rulesList = $("rulesList");
+  const resetRulesBtn = $("resetRulesBtn");
+  const addRuleBtn = $("addRuleBtn");
+
+  // Drafting mode
+  const draftText = $("draftText");
+  const draftWeight = $("draftWeight");
+  const draftOut = $("draftOut");
+  const draftExtractBtn = $("draftExtractBtn");
+  const draftCreateBtn = $("draftCreateBtn");
+
+  const toast = $("toast");
+  const toastMsg = $("toastMsg");
+  let toastTimer = null;
+
+  // Modal
+  const modalBackdrop = $("modalBackdrop");
+  const closeModalBtn = $("closeModalBtn");
+  const dossierTitle = $("dossierTitle");
+  const dossierSub = $("dossierSub");
+  const dossierVerdict = $("dossierVerdict");
+  const dossierRel = $("dossierRel");
+  const dossierThreat = $("dossierThreat");
+  const dossierEmojiLine = $("dossierEmojiLine");
+  const dossierOffence = $("dossierOffence");
+  const dossierCommentary = $("dossierCommentary");
+  const dossierHits = $("dossierHits");
+  const dossierMeta = $("dossierMeta");
+
+  // ---------------- Helpers ----------------
+  function uid(){
+    return Math.random().toString(16).slice(2) + "-" + Date.now().toString(16);
+  }
+  function normalize(s){ return (s ?? "").toString().toLowerCase().trim(); }
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+  function escapeHtml(str){
+    return (str ?? "").toString()
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+  function toastify(msg){
+    toastMsg.textContent = msg;
+    toast.style.display = "inline-flex";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => (toast.style.display = "none"), 1750);
+  }
+
+  // ---------------- Edit Lock ----------------
+  async function sha256(text){
+    const enc = new TextEncoder().encode(text);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+  function hasPassphrase(){ return !!localStorage.getItem(PASS_HASH_KEY); }
+  function sessionUnlocked(){ return sessionStorage.getItem(SESSION_UNLOCK_KEY) === "1"; }
+
+  function setLockedUI(locked){
+    editorCard.classList.toggle("locked", locked);
+    edictsCard.classList.toggle("locked", locked);
+    editStatus.textContent = locked ? "locked" : "unlocked";
+
+    lockBtn.style.display = locked ? "none" : "inline-block";
+    unlockBtn.style.display = locked ? "inline-block" : "none";
+
+    lockTitle.textContent = locked ? "Edit Mode Locked" : "Edit Mode Unlocked";
+    lockDesc.textContent = locked
+      ? (hasPassphrase()
+          ? "Enter passphrase to add/edit entries."
+          : "No passphrase set. Click “Set / Reset Passphrase”.")
+      : "You may now add, edit, delete, and draft Gabe’s Edicts. Lock again when finished.";
+
+    document.querySelectorAll("[data-edit-action]").forEach(btn => {
+      btn.disabled = locked;
+      btn.style.opacity = locked ? ".5" : "1";
+      btn.style.pointerEvents = locked ? "none" : "auto";
+    });
+  }
+
+  async function unlockAttempt(){
+    const phrase = passphrase.value || "";
+    if (!phrase.trim()){
+      toastify("Passphrase required.");
+      return;
+    }
+    const stored = localStorage.getItem(PASS_HASH_KEY);
+    if (!stored){
+      toastify("No passphrase set yet.");
+      return;
+    }
+    const h = await sha256(phrase);
+    if (h === stored){
+      sessionStorage.setItem(SESSION_UNLOCK_KEY, "1");
+      passphrase.value = "";
+      setLockedUI(false);
+      toastify("Unlocked.");
+      renderAll();
+    }else{
+      toastify("Incorrect passphrase.");
+    }
+  }
+
+  async function setOrResetPassphrase(){
+    const p1 = prompt("Set a passphrase for Edit Mode.\nStored locally as a hash.\n(Keep it memorable.)");
+    if (!p1) return;
+    const p2 = prompt("Confirm passphrase.");
+    if (p1 !== p2){
+      alert("Passphrases did not match.");
+      return;
+    }
+    const h = await sha256(p1);
+    localStorage.setItem(PASS_HASH_KEY, h);
+    sessionStorage.setItem(SESSION_UNLOCK_KEY, "1");
+    passphrase.value = "";
+    setLockedUI(false);
+    toastify("Passphrase set & unlocked.");
+    renderAll();
+  }
+
+  function lockNow(){
+    sessionStorage.removeItem(SESSION_UNLOCK_KEY);
+    setLockedUI(true);
+    toastify("Locked.");
+    renderAll();
+  }
+
+  // ---------------- Default Edicts ----------------
+  function defaultRules(){
+    return [
+      {
+        id: uid(),
+        title: "The Trident Clause",
+        description: "Explicit threats, violence, weapons, or stated intent to harm.",
+        pattern: "\\b(threat|threaten|kill|murder|harm|assault|violent|beat|stab|weapon|gun|knife)\\b",
+        weight: 26,
+        domain: "violence",
+        enabled: true
+      },
+      {
+        id: uid(),
+        title: "The Pursuit & Harassment Doctrine",
+        description: "Stalking, harassment, intimidation, blackmail, doxxing.",
+        pattern: "\\b(stalk|harass|harassment|follow(ed)?|dox|blackmail|intimidat|creep)\\b",
+        weight: 20,
+        domain: "harassment",
+        enabled: true
+      },
+      {
+        id: uid(),
+        title: "The Coercion Statute",
+        description: "Coercion, control, pressure, force, cornering, ultimatums.",
+        pattern: "\\b(coerc|control|force|pressur(e|ed)|ultimatum|corner(ed)?)\\b",
+        weight: 18,
+        domain: "control",
+        enabled: true
+      },
+      {
+        id: uid(),
+        title: "The Gaslighting Article",
+        description: "Reality distortion; undermining perception; making you doubt yourself.",
+        pattern: "\\b(gaslight|made me doubt|crazy|insane|imagining|overreact|reality)\\b",
+        weight: 18,
+        domain: "psychological",
+        enabled: true
+      },
+      {
+        id: uid(),
+        title: "The Betrayal Addendum",
+        description: "Betrayal, cheating, double-crossing, backstabbing.",
+        pattern: "\\b(betray|cheat|infidel|backstab|snake|two[- ]?faced|double[- ]?cross)\\b",
+        weight: 16,
+        domain: "betrayal",
+        enabled: true
+      },
+      {
+        id: uid(),
+        title: "The Sabotage Ordinance",
+        description: "Undermining, blocking, derailing, ruining plans, stonewalling.",
+        pattern: "\\b(sabotage|undermin|ruin(ed)?|derail|block(ed)?|stonewall)\\b",
+        weight: 14,
+        domain: "sabotage",
+        enabled: true
+      },
+      {
+        id: uid(),
+        title: "The Public Humiliation Clause",
+        description: "Mockery, shame, ridicule, humiliation, embarrassment.",
+        pattern: "\\b(humiliat|mock|shame|embarrass|ridicul)\\b",
+        weight: 12,
+        domain: "humiliation",
+        enabled: true
+      },
+      {
+        id: uid(),
+        title: "The Financial Injury Provision",
+        description: "Fraud, theft, extortion, money harm.",
+        pattern: "\\b(steal|stole|fraud|scam|money|debt|extort|owe|embezzle)\\b",
+        weight: 16,
+        domain: "financial",
+        enabled: true
+      },
+      {
+        id: uid(),
+        title: "The Discrimination Ban",
+        description: "Racism, sexism, ableism, bigotry, discrimination.",
+        pattern: "\\b(racist|sexist|misogyn|bigot|homophob|transphob|ableist|discriminat)\\b",
+        weight: 14,
+        domain: "discrimination",
+        enabled: true
+      },
+      {
+        id: uid(),
+        title: "The Abandonment Note",
+        description: "Ghosting, abandonment, discarding, vanishing.",
+        pattern: "\\b(abandon|ghost|left me|discard|vanish(ed)?)\\b",
+        weight: 10,
+        domain: "abandonment",
+        enabled: true
+      }
+    ];
+  }
+
+  // ---------------- Severity + Relationship ----------------
+  const severityBase = {
+    "Minor": 18,
+    "Notable": 35,
+    "Grievous": 58,
+    "Catastrophic": 78,
+  };
+  const relationshipMod = {
+    "Reconciled": -6,
+    "Civil": -2,
+    "Unknown": 0,
+    "Strained": +5,
+    "No Contact": +9,
+    "Active Hostility": +12,
+  };
+
+  function threatEmoji(score){
+    if (score >= 92) return "🔱";
+    if (score >= 82) return "🗡️";
+    if (score >= 72) return "🦂";
+    if (score >= 62) return "🦀";
+    if (score >= 50) return "🍅";
+    if (score >= 35) return "🥔";
+    if (score >= 20) return "🫧";
+    return "🕊️";
+  }
+
+  function verdictTagClass(v){
+    const x = normalize(v);
+    if (x.includes("irredeemable") || x.includes("exiled") || x.includes("sentenced") || x.includes("guilty")) return "bad";
+    if (x.includes("under review")) return "warn";
+    if (x.includes("acquitted") || x.includes("pardon")) return "good";
+    return "";
+  }
+  function severityTagClass(v){
+    const x = normalize(v);
+    if (x.includes("catastrophic") || x.includes("grievous")) return "bad";
+    if (x.includes("notable")) return "warn";
+    if (x.includes("minor")) return "good";
+    return "";
+  }
+
+  // ---------------- Rule Engine (Edicts) ----------------
+  function compileRule(rule){
+    try{
+      return new RegExp(rule.pattern, "i");
+    }catch{
+      return null;
+    }
+  }
+
+  function computeThreat(entry){
+    const base = severityBase[entry.severity] ?? 35;
+    const rel = relationshipMod[entry.relationship] ?? 0;
+
+    const text = `${entry.offence} ${entry.commentary || ""}`.toLowerCase();
+
+    let ruleScore = 0;
+    const hits = [];
+
+    for (const r of rules){
+      if (!r.enabled) continue;
+      const rx = compileRule(r);
+      if (!rx) continue;
+      if (rx.test(text)){
+        ruleScore += (Number(r.weight) || 0);
+        hits.push(r.title);
+      }
+    }
+
+    const intensity = (text.match(/(always|never|constantly|relentless|every time|months|years|daily|weekly)/g) || []).length;
+    const intensityBonus = Math.min(12, intensity * 2);
+
+    const raw = base + rel + ruleScore + intensityBonus;
+
+    const soft = Math.round(100 * (1 - Math.exp(-raw / 70)));
+    const catastrophicBoost = entry.severity === "Catastrophic" ? 6 : 0;
+
+    const score = clamp(soft + catastrophicBoost, 0, 100);
+    return { score, hits, raw: Math.round(raw) };
+  }
+
+  // ---------------- Persistence ----------------
+  function saveEntries(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    count.textContent = String(entries.length);
+  }
+  function saveRules(){
+    localStorage.setItem(RULES_KEY, JSON.stringify(rules));
+  }
+
+  function seedEntries(){
+    return [{
+      id: uid(),
+      name: "Example Person",
+      offence: "Persistent gaslighting + sabotage of my plans (constantly).",
+      date: "",
+      relationship: "No Contact",
+      verdict: "Sentenced to Irrelevance",
+      commentary: "An object lesson in how not to treat a mind you cannot control.",
+      severity: "Grievous",
+      createdAt: Date.now() - 86400000 * 21,
+      updatedAt: Date.now() - 86400000 * 21,
+    }];
+  }
+
+  function loadAll(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      entries = raw ? JSON.parse(raw) : seedEntries();
+    }catch{
+      entries = seedEntries();
+    }
+
+    try{
+      const rr = localStorage.getItem(RULES_KEY);
+      rules = rr ? JSON.parse(rr) : defaultRules();
+    }catch{
+      rules = defaultRules();
+    }
+
+    count.textContent = String(entries.length);
+  }
+
+  // ---------------- Sorting / Filtering ----------------
+  function bySort(a, b){
+    const dir = sortDir === "asc" ? 1 : -1;
+
+    const ta = computeThreat(a).score;
+    const tb = computeThreat(b).score;
+
+    if (sortKey === "threat" || sortKey === "rank"){
+      return (ta - tb) * dir;
+    }
+    if (sortKey === "signals"){
+      const ha = computeThreat(a).hits.length;
+      const hb = computeThreat(b).hits.length;
+      return (ha - hb) * dir;
+    }
+
+    const va = (a[sortKey] ?? "");
+    const vb = (b[sortKey] ?? "");
+
+    if (sortKey === "date"){
+      const da = va ? Date.parse(va) : NaN;
+      const db = vb ? Date.parse(vb) : NaN;
+      if (isNaN(da) && isNaN(db)) return (a.updatedAt - b.updatedAt) * dir;
+      if (isNaN(da)) return 1;
+      if (isNaN(db)) return -1;
+      return (da - db) * dir;
+    }
+
+    return va.toString().localeCompare(vb.toString(), undefined, {numeric:true, sensitivity:"base"}) * dir;
+  }
+
+  function applyFilters(list){
+    let out = [...list];
+
+    if (filterVerdict){
+      out = out.filter(e => normalize(e.verdict) === normalize(filterVerdict));
+    }
+
+    if (searchText){
+      const q = normalize(searchText);
+      out = out.filter(e => {
+        const hay = [e.name,e.offence,e.date,e.relationship,e.verdict,e.commentary,e.severity].map(normalize).join(" • ");
+        return hay.includes(q);
+      });
+    }
+
+    out.sort(bySort);
+    return out;
+  }
+
+  function updateSortIndicators(){
+    document.querySelectorAll("thead th .sort").forEach(el => el.textContent = "");
+    const el = $("sort-" + sortKey);
+    if (el) el.textContent = (sortDir === "asc") ? "↑" : "↓";
+  }
+
+  function setSort(key){
+    if (sortKey === key){
+      sortDir = (sortDir === "asc") ? "desc" : "asc";
+    } else {
+      sortKey = key;
+      sortDir = (key === "rank" || key === "threat") ? "desc" : "asc";
+    }
+    renderTable();
+  }
+
+  function applySortPreset(v){
+    if (v === "rank_desc"){ sortKey="rank"; sortDir="desc"; }
+    if (v === "date_desc"){ sortKey="date"; sortDir="desc"; }
+    if (v === "name_asc"){ sortKey="name"; sortDir="asc"; }
+    if (v === "verdict_asc"){ sortKey="verdict"; sortDir="asc"; }
+    renderTable();
+  }
+
+  // ---------------- Drafting Mode ----------------
+  const STOP = new Set([
+    "the","a","an","and","or","to","of","in","on","for","with","without","by","at","from","as",
+    "this","that","these","those","it","its","is","are","was","were","be","been","being",
+    "i","me","my","mine","you","your","yours","we","our","ours","they","their","theirs",
+    "he","him","his","she","her","hers","them","then","than","but","so","just","very","really"
+  ]);
+
+  function extractKeywords(text){
+    const raw = (text || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9\s'-]/g, " ")
+      .split(/\s+/)
+      .map(w => w.trim())
+      .filter(Boolean)
+      .filter(w => w.length >= 4)
+      .filter(w => !STOP.has(w));
+
+    // mild stemming-ish: prefer distinct tokens
+    const uniq = [];
+    const seen = new Set();
+    for (const w of raw){
+      const key = w.replace(/(ing|ed|ly|es|s)$/,"");
+      if (key.length < 3) continue;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      uniq.push(w);
+      if (uniq.length >= 10) break;
+    }
+    return uniq;
+  }
+
+  function keywordsToRegex(keys){
+    if (!keys.length) return "";
+    const escaped = keys.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    return "\\b(" + escaped.join("|") + ")\\b";
+  }
+
+  function updateDraftPreview(){
+    const keys = extractKeywords(draftText.value);
+    const rx = keywordsToRegex(keys);
+    draftOut.textContent = rx || "—";
+    return { keys, rx };
+  }
+
+  function createRuleFromDraft(){
+    if (!sessionUnlocked()){
+      toastify("Locked. Unlock Edit Mode.");
+      return;
+    }
+    const { keys, rx } = updateDraftPreview();
+    if (!rx){
+      toastify("Draft needs keywords.");
+      return;
+    }
+    const title = prompt("Edict title (cursive):", "The New Edict");
+    if (!title) return;
+    const desc = prompt("Edict description (italic):", draftText.value.slice(0, 180));
+    const w = Number(draftWeight.value || 0);
+
+    rules.unshift({
+      id: uid(),
+      title,
+      description: desc || "",
+      pattern: rx,
+      weight: isFinite(w) ? w : 0,
+      domain: "drafted",
+      enabled: true
+    });
+
+    saveRules();
+    renderAll();
+    toastify("Edict drafted.");
+    draftText.value = "";
+    draftOut.textContent = "—";
+  }
+
+  // ---------------- Render: Rules ----------------
+  function renderRules(){
+    rulesList.innerHTML = "";
+    const locked = !sessionUnlocked();
+
+    for (const r of rules){
+      const rxOk = !!compileRule(r);
+
+      const wrap = document.createElement("div");
+      wrap.className = "ruleRow";
+
+      const top = document.createElement("div");
+      top.className = "top";
+
+      const left = document.createElement("div");
+      left.innerHTML = `
+        <div class="name">${escapeHtml(r.title)}</div>
+        <div class="desc">${escapeHtml(r.description || "")}</div>
+      `;
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.innerHTML = `
+        <span class="tinyTag">Domain: <b>${escapeHtml(r.domain || "—")}</b></span>
+        <span class="tinyTag">Weight: <b>${escapeHtml(String(r.weight))}</b></span>
+        <span class="tinyTag">Regex: <b>${rxOk ? "ok" : "invalid"}</b></span>
+        <span class="tinyTag">Enabled: <b>${r.enabled ? "yes" : "no"}</b></span>
+      `;
+
+      top.appendChild(left);
+      top.appendChild(meta);
+
+      const inputs = document.createElement("div");
+      inputs.className = "inputs";
+      inputs.innerHTML = `
+        <div>
+          <label>Pattern (regex)</label>
+          <input value="${escapeHtml(r.pattern)}" ${locked ? "disabled" : ""} />
+        </div>
+        <div>
+          <label>Weight</label>
+          <input type="number" step="1" min="-20" max="60" value="${escapeHtml(String(r.weight))}" ${locked ? "disabled" : ""} />
+        </div>
+        <div style="display:flex; gap:10px; align-items:end; flex-wrap:wrap;">
+          <button type="button" class="ghost" ${locked ? "disabled" : ""}>Toggle</button>
+          <button type="button" class="danger" ${locked ? "disabled" : ""}>Delete</button>
+        </div>
+      `;
+
+      const [patternInput, weightInput] = inputs.querySelectorAll("input");
+      const [toggleBtn, deleteBtn] = inputs.querySelectorAll("button");
+
+      patternInput.addEventListener("input", () => {
+        r.pattern = patternInput.value;
+        saveRules();
+        renderTable();
+      });
+
+      weightInput.addEventListener("input", () => {
+        r.weight = Number(weightInput.value || 0);
+        saveRules();
+        renderTable();
+      });
+
+      toggleBtn.addEventListener("click", () => {
+        r.enabled = !r.enabled;
+        saveRules();
+        renderAll();
+        toastify(r.enabled ? "Edict enabled." : "Edict disabled.");
+      });
+
+      deleteBtn.addEventListener("click", () => {
+        const ok = confirm(`Delete edict "${r.title}"?`);
+        if (!ok) return;
+        rules = rules.filter(x => x.id !== r.id);
+        saveRules();
+        renderAll();
+        toastify("Edict deleted.");
+      });
+
+      wrap.appendChild(top);
+      wrap.appendChild(inputs);
+      rulesList.appendChild(wrap);
+    }
+  }
+
+  function addRule(){
+    if (!sessionUnlocked()){
+      toastify("Locked. Unlock Edit Mode.");
+      return;
+    }
+    const title = prompt("Edict title (cursive):", "The New Edict");
+    if (!title) return;
+    const description = prompt("Edict description (italic):", "What harm does this capture?");
+    const pattern = prompt("Regex pattern (case-insensitive):", "\\b(keyword1|keyword2)\\b");
+    if (!pattern) return;
+    const weightStr = prompt("Weight (higher = more severe).", "12");
+    const weight = Number(weightStr || 0);
+
+    rules.unshift({
+      id: uid(),
+      title,
+      description: description || "",
+      pattern,
+      weight: isFinite(weight) ? weight : 0,
+      domain: "custom",
+      enabled: true
+    });
+
+    saveRules();
+    renderAll();
+    toastify("Edict added.");
+  }
+
+  function resetRules(){
+    if (!sessionUnlocked()){
+      toastify("Locked. Unlock Edit Mode.");
+      return;
+    }
+    const ok = confirm("Restore default Gabe’s Edicts and Rules? This replaces your current statute book.");
+    if (!ok) return;
+    rules = defaultRules();
+    saveRules();
+    renderAll();
+    toastify("Default edicts restored.");
+  }
+
+  // ---------------- Render: Table ----------------
+  function tdText(text, mutedIfEmpty=false, mono=false){
+    const td = document.createElement("td");
+    const v = (text ?? "").toString().trim();
+    td.textContent = v || "—";
+    if (mutedIfEmpty && !v) td.classList.add("muted");
+    if (mono) td.classList.add("mono");
+    return td;
+  }
+  function tdMono(text){
+    const td = document.createElement("td");
+    td.innerHTML = `<span class="mono">${escapeHtml(text)}</span>`;
+    return td;
+  }
+  function tdTag(text, cls=""){
+    const td = document.createElement("td");
+    const v = (text ?? "").toString().trim() || "—";
+    const span = document.createElement("span");
+    span.className = `tag ${cls}`.trim();
+    span.textContent = v;
+    td.appendChild(span);
+    return td;
+  }
+  function tdThreat(score){
+    const td = document.createElement("td");
+    const emoji = threatEmoji(score);
+    const cls = score >= 72 ? "bad" : score >= 45 ? "warn" : "good";
+    const span = document.createElement("span");
+    span.className = `tag ${cls}`;
+    span.textContent = `${emoji} ${score}%`;
+    td.appendChild(span);
+    return td;
+  }
+  function tdHits(hits){
+    const td = document.createElement("td");
+    if (!hits.length){
+      td.innerHTML = `<span class="mono">—</span>`;
+      return td;
+    }
+    const short = hits.slice(0,2).join(" • ") + (hits.length > 2 ? ` • +${hits.length-2}` : "");
+    td.innerHTML = `<span class="mono">${escapeHtml(short)}</span>`;
+    return td;
+  }
+
+  function renderTable(){
+    const filtered = applyFilters(entries);
+    tbody.innerHTML = "";
+
+    // Rank based on highest threat within filtered list
+    const ranked = [...filtered].sort((x,y) => computeThreat(y).score - computeThreat(x).score);
+    const rankMap = new Map();
+    ranked.forEach((e, i) => rankMap.set(e.id, i+1));
+
+    const locked = !sessionUnlocked();
+    setLockedUI(locked);
+
+    for (const e of filtered){
+      const { score, hits } = computeThreat(e);
+      const rank = rankMap.get(e.id) ?? "—";
+
+      const tr = document.createElement("tr");
+
+      tr.appendChild(tdText(String(rank), false, true));
+      tr.appendChild(tdThreat(score));
+      tr.appendChild(tdText(e.name));
+      tr.appendChild(tdText(e.offence));
+      tr.appendChild(tdMono(e.date || "—"));
+      tr.appendChild(tdTag(e.relationship));
+      tr.appendChild(tdTag(e.verdict, verdictTagClass(e.verdict)));
+      tr.appendChild(tdText(e.commentary, true));
+      tr.appendChild(tdTag(e.severity, severityTagClass(e.severity)));
+      tr.appendChild(tdHits(hits));
+
+      const actions = document.createElement("td");
+      actions.className = "cellActions";
+
+      const dossierBtn = document.createElement("button");
+      dossierBtn.textContent = "Dossier";
+      dossierBtn.type = "button";
+      dossierBtn.className = "ghost";
+      dossierBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        openDossier(e.id);
+      });
+
+      const editBtn = document.createElement("button");
+      editBtn.textContent = "Edit";
+      editBtn.type = "button";
+      editBtn.setAttribute("data-edit-action","1");
+      editBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        startEdit(e.id);
+      });
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.type = "button";
+      delBtn.className = "danger";
+      delBtn.setAttribute("data-edit-action","1");
+      delBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        removeEntry(e.id);
+      });
+
+      actions.appendChild(dossierBtn);
+      actions.appendChild(editBtn);
+      actions.appendChild(delBtn);
+      tr.appendChild(actions);
+
+      tr.addEventListener("click", () => openDossier(e.id));
+      tbody.appendChild(tr);
+    }
+
+    showing.textContent = String(filtered.length);
+    total.textContent = String(entries.length);
+    sortedBy.textContent = sortKey;
+    sortedDirEl.textContent = sortDir === "asc" ? "↑" : "↓";
+    updateSortIndicators();
+  }
+
+  function renderAll(){
+    saveEntries();
+    saveRules();
+    renderRules();
+    renderTable();
+  }
+
+  // ---------------- Dossier Modal ----------------
+  function openDossier(id){
+    const e = entries.find(x => x.id === id);
+    if (!e) return;
+
+    const { score, hits, raw } = computeThreat(e);
+    const emoji = threatEmoji(score);
+
+    dossierTitle.textContent = e.name || "Case File";
+    dossierSub.textContent = `${e.date ? `Date: ${e.date}` : "Date: —"} • Severity: ${e.severity} • Rank recalculates automatically`;
+
+    dossierVerdict.textContent = e.verdict || "—";
+    dossierRel.textContent = `Relationship: ${e.relationship || "—"}`;
+
+    dossierThreat.textContent = `${emoji} ${score}%`;
+    dossierEmojiLine.textContent = `Insignia: ${emoji} • Raw pressure: ${raw} (soft-capped to 100)`;
+
+    dossierOffence.textContent = e.offence || "—";
+    dossierCommentary.textContent = e.commentary || "—";
+    dossierHits.textContent = hits.length ? hits.join(" • ") : "—";
+
+    const meta = [
+      `Created: ${new Date(e.createdAt).toLocaleString()}`,
+      `Updated: ${new Date(e.updatedAt).toLocaleString()}`
+    ].join(" • ");
+    dossierMeta.textContent = meta;
+
+    modalBackdrop.style.display = "flex";
+    modalBackdrop.setAttribute("aria-hidden","false");
+  }
+
+  function closeDossier(){
+    modalBackdrop.style.display = "none";
+    modalBackdrop.setAttribute("aria-hidden","true");
+  }
+
+  // ---------------- Editor Ops ----------------
+  function clearForm(){
+    form.reset();
+    editingIdEl.value = "";
+    saveBtn.textContent = "Add to Register";
+    nameEl.focus();
+  }
+
+  function startEdit(id){
+    if (!sessionUnlocked()){
+      toastify("Locked. Unlock Edit Mode.");
+      return;
+    }
+    const e = entries.find(x => x.id === id);
+    if (!e) return;
+
+    nameEl.value = e.name;
+    offenceEl.value = e.offence;
+    dateEl.value = e.date || "";
+    relationshipEl.value = e.relationship;
+    verdictEl.value = e.verdict;
+    severityEl.value = e.severity;
+    commentaryEl.value = e.commentary || "";
+    editingIdEl.value = id;
+
+    saveBtn.textContent = "Save Changes";
+    toastify("Editing mode.");
+    nameEl.focus();
+  }
+
+  function upsertFromForm(){
+    if (!sessionUnlocked()){
+      toastify("Locked. Unlock Edit Mode.");
+      return;
+    }
+
+    const payload = {
+      name: nameEl.value.trim(),
+      offence: offenceEl.value.trim(),
+      date: dateEl.value || "",
+      relationship: relationshipEl.value,
+      verdict: verdictEl.value,
+      severity: severityEl.value,
+      commentary: commentaryEl.value.trim(),
+    };
+
+    if (!payload.name || !payload.offence){
+      toastify("Name + offence required.");
+      return;
+    }
+
+    const now = Date.now();
+    const id = editingIdEl.value;
+
+    if (id){
+      const idx = entries.findIndex(e => e.id === id);
+      if (idx >= 0){
+        entries[idx] = { ...entries[idx], ...payload, updatedAt: now };
+        renderAll();
+        toastify("Updated.");
+        clearForm();
+        return;
+      }
+    }
+
+    entries.unshift({
+      id: uid(),
+      ...payload,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    renderAll();
+    toastify("Added.");
+    clearForm();
+  }
+
+  function removeEntry(id){
+    if (!sessionUnlocked()){
+      toastify("Locked. Unlock Edit Mode.");
+      return;
+    }
+    const e = entries.find(x => x.id === id);
+    if (!e) return;
+    const ok = confirm(`Delete entry for "${e.name}"? This cannot be undone.`);
+    if (!ok) return;
+    entries = entries.filter(x => x.id !== id);
+    renderAll();
+    toastify("Deleted.");
+    if (editingIdEl.value === id) clearForm();
+  }
+
+  function wipeAll(){
+    if (!sessionUnlocked()){
+      toastify("Locked. Unlock Edit Mode.");
+      return;
+    }
+    const ok = confirm("Wipe the entire Register from this browser?");
+    if (!ok) return;
+    entries = [];
+    renderAll();
+    toastify("Register wiped.");
+    clearForm();
+  }
+
+  // ---------------- CSV ----------------
+  function toCSV(){
+    const headers = ["Name","Offence Description","Date","Relationship","Verdict","Commentary","Severity"];
+    const rows = entries.map(e => [e.name, e.offence, e.date, e.relationship, e.verdict, e.commentary, e.severity]);
+    const esc = (v) => {
+      const s = (v ?? "").toString();
+      if (/[,"\n]/.test(s)) return `"${s.replaceAll('"', '""')}"`;
+      return s;
+    };
+    return [headers, ...rows].map(r => r.map(esc).join(",")).join("\n");
+  }
+
+  function download(filename, text){
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], {type:"text/csv;charset=utf-8"}));
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function parseCSV(text){
+    const out = [];
+    let i = 0, field = "", row = [], inQuotes = false;
+
+    while (i < text.length){
+      const c = text[i];
+
+      if (inQuotes){
+        if (c === '"'){
+          if (text[i+1] === '"'){ field += '"'; i += 2; continue; }
+          inQuotes = false; i++; continue;
+        }
+        field += c; i++; continue;
+      }
+
+      if (c === '"'){ inQuotes = true; i++; continue; }
+      if (c === ","){ row.push(field); field = ""; i++; continue; }
+      if (c === "\n"){
+        row.push(field); field = "";
+        if (row.some(x => x.trim() !== "")) out.push(row);
+        row = [];
+        i++; continue;
+      }
+      if (c === "\r"){ i++; continue; }
+
+      field += c; i++;
+    }
+    row.push(field);
+    if (row.some(x => x.trim() !== "")) out.push(row);
+    return out;
+  }
+
+  function importCSV(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const text = String(reader.result || "");
+        const rows = parseCSV(text);
+        if (rows.length < 2) throw new Error("No rows found.");
+
+        const header = rows[0].map(h => normalize(h));
+        const idx = (...names) => {
+          for (const n of names){
+            const i = header.indexOf(normalize(n));
+            if (i >= 0) return i;
+          }
+          return -1;
+        };
+
+        const iName = idx("name");
+        const iOff = idx("offence description","offence");
+        const iDate = idx("date","date of offence");
+        const iRel = idx("relationship","current relationship");
+        const iVer = idx("verdict");
+        const iCom = idx("commentary");
+        const iSev = idx("severity");
+
+        if (iName < 0 || iOff < 0) throw new Error("CSV must include at least Name and Offence Description columns.");
+
+        const now = Date.now();
+        const imported = [];
+
+        for (let r = 1; r < rows.length; r++){
+          const row = rows[r];
+          const name = (row[iName] ?? "").trim();
+          const offence = (row[iOff] ?? "").trim();
+          if (!name || !offence) continue;
+
+          imported.push({
+            id: uid(),
+            name,
+            offence,
+            date: (row[iDate] ?? "").trim(),
+            relationship: (row[iRel] ?? "Unknown").trim() || "Unknown",
+            verdict: (row[iVer] ?? "Under Review").trim() || "Under Review",
+            commentary: (row[iCom] ?? "").trim(),
+            severity: (row[iSev] ?? "Notable").trim() || "Notable",
+            createdAt: now,
+            updatedAt: now,
+          });
+        }
+
+        if (!imported.length){
+          toastify("No valid rows to import.");
+          return;
+        }
+
+        entries = [...imported, ...entries];
+        renderAll();
+        toastify(`Imported ${imported.length} rows.`);
+      }catch(err){
+        toastify("Import failed.");
+        alert("CSV import failed: " + (err?.message || err));
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // ---------------- Events ----------------
+  form.addEventListener("submit", (e) => { e.preventDefault(); upsertFromForm(); });
+  clearBtn.addEventListener("click", clearForm);
+  wipeBtn.addEventListener("click", wipeAll);
+
+  search.addEventListener("input", () => { searchText = search.value; renderTable(); });
+  filterVerdictEl.addEventListener("change", () => { filterVerdict = filterVerdictEl.value; renderTable(); });
+  sortPreset.addEventListener("change", () => applySortPreset(sortPreset.value));
+
+  exportBtn.addEventListener("click", () => {
+    const csv = toCSV();
+    const stamp = new Date().toISOString().slice(0,10);
+    download(`adversary-register-${stamp}.csv`, csv);
+    toastify("CSV exported.");
+  });
+
+  importBtn.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files?.[0];
+    if (file) importCSV(file);
+    fileInput.value = "";
+  });
+
+  document.querySelectorAll("thead th[data-key]").forEach(th => {
+    th.addEventListener("click", () => setSort(th.dataset.key));
+  });
+
+  unlockBtn.addEventListener("click", unlockAttempt);
+  setPassBtn.addEventListener("click", setOrResetPassphrase);
+  lockBtn.addEventListener("click", lockNow);
+
+  passphrase.addEventListener("keydown", (e) => {
+    if (e.key === "Enter"){
+      e.preventDefault();
+      unlockAttempt();
+    }
+  });
+
+  resetRulesBtn.addEventListener("click", resetRules);
+  addRuleBtn.addEventListener("click", addRule);
+
+  // Drafting mode live preview
+  draftText.addEventListener("input", updateDraftPreview);
+  draftExtractBtn.addEventListener("click", () => {
+    if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
+    const { keys, rx } = updateDraftPreview();
+    toastify(keys.length ? `Extracted: ${keys.slice(0,5).join(", ")}${keys.length>5?"…":""}` : "No keywords found.");
+    draftOut.textContent = rx || "—";
+  });
+  draftCreateBtn.addEventListener("click", createRuleFromDraft);
+
+  // Modal controls
+  closeModalBtn.addEventListener("click", closeDossier);
+  modalBackdrop.addEventListener("click", (e) => {
+    if (e.target === modalBackdrop) closeDossier();
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener("keydown", (e) => {
+    const isK = (e.key || "").toLowerCase() === "k";
+    if (isK && (e.ctrlKey || e.metaKey)){
+      e.preventDefault();
+      search.focus();
+      toastify("Search focused.");
+    }
+    if (e.key === "Escape"){
+      closeDossier();
+    }
+  });
+
+  // ---------------- Boot ----------------
+  loadAll();
+  // ensure defaults exist
+  if (!localStorage.getItem(RULES_KEY)) saveRules();
+  if (!localStorage.getItem(STORAGE_KEY)) saveEntries();
+
+  setLockedUI(!sessionUnlocked());
+  updateDraftPreview();
+  renderAll();
+})();
+</script>
+</body>
+</html>
