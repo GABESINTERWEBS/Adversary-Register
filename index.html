@@ -3,17 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>The Register of Adversaries</title>
+  <title>Gabe’s Register of Adversaries</title>
   <meta name="color-scheme" content="dark light" />
+  <meta name="description" content="A private, locally-stored register with edicts, weighting, ranking, and A–Z indexing." />
 
-  <!-- Stark serif + cursive (legible) -->
+  <!-- Triskelion-Dragon Favicon (black + red) -->
+  <!-- Note: data URI must be URL-encoded -->
+  <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Cdefs%3E%3CradialGradient%20id%3D%27g%27%20cx%3D%2750%25%27%20cy%3D%2745%25%27%20r%3D%2765%25%27%3E%3Cstop%20offset%3D%270%25%27%20stop-color%3D%27%23ff1a3d%27%20stop-opacity%3D%270.35%27/%3E%3Cstop%20offset%3D%2760%25%27%20stop-color%3D%27%23000000%27%20stop-opacity%3D%270.15%27/%3E%3Cstop%20offset%3D%27100%25%27%20stop-color%3D%27%23000000%27%20stop-opacity%3D%270%27/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20fill%3D%27%23050507%27/%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%2742%27%20fill%3D%27url(%23g)%27%20stroke%3D%27%23ffffff%27%20stroke-opacity%3D%270.18%27%20stroke-width%3D%272%27/%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%2734%27%20fill%3D%27none%27%20stroke%3D%27%23ff1a3d%27%20stroke-opacity%3D%270.35%27%20stroke-width%3D%272%27/%3E%3Cpath%20d%3D%27M50%2016%20c8%2011%2016%2014%2026%2016%20c-6%2010-6%2018%200%2028%20c-10%202-18%205-26%2016%20c-8-11-16-14-26-16%20c6-10%206-18%200-28%20c10-2%2018-5%2026-16Z%27%20fill%3D%27none%27%20stroke%3D%27%23ffffff%27%20stroke-opacity%3D%270.22%27%20stroke-width%3D%272%27/%3E%3C!--%20three%20dragon%20heads%20--%3E%3Cg%20fill%3D%27%23ff1a3d%27%20fill-opacity%3D%270.92%27%20stroke%3D%27%23000000%27%20stroke-opacity%3D%270.55%27%20stroke-width%3D%271%27%3E%3Cpath%20d%3D%27M50%2024%20c6%200%2010%203%2011%206%20c-2%201%20-3%202%20-3%204%20c0%202%201%204%202%205%20c-4%201%20-9-1%20-12-5%20c-2-3%200-10%202-10Z%27/%3E%3Cpath%20d%3D%27M70%2062%20c2%205%200%2011%20-3%2013%20c-1-2%20-2-3%20-4-3%20c-2%200-4%201-6%202%20c1-4%204-9%208-12%20c2-2%204-2%205%200Z%27/%3E%3Cpath%20d%3D%27M30%2062%20c-2%205%200%2011%203%2013%20c1-2%202-3%204-3%20c2%200%204%201%206%202%20c-1-4%20-4-9%20-8-12%20c-2-2%20-4-2%20-5%200Z%27/%3E%3C/g%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%276%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.18%27%20stroke%3D%27%23ff1a3d%27%20stroke-opacity%3D%270.35%27%20stroke-width%3D%272%27/%3E%3C/svg%3E" />
+
+  <!-- Stark serif + legible calligraphic cursive -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Petit+Formal+Script&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* AHS-poster palette: black/white, razor greys, one bright accent */
       --bg:#050507;
       --panel:#0b0b0f;
       --ink:#f6f6f8;
@@ -23,9 +28,7 @@
       --line:rgba(255,255,255,.09);
       --line2:rgba(255,255,255,.14);
 
-      --accent:#ff1a3d;     /* blood-red accent */
-      --accent2:#ffffff;    /* monochrome support */
-
+      --accent:#ff1a3d; /* black + red only */
       --shadow: 0 26px 90px rgba(0,0,0,.66);
       --shadow2: 0 12px 46px rgba(0,0,0,.52);
 
@@ -44,9 +47,9 @@
       font-family: var(--serif);
       color: var(--ink);
       background:
-        radial-gradient(900px 540px at 12% -10%, rgba(255,255,255,.05), transparent 58%),
-        radial-gradient(1100px 650px at 92% 0%, rgba(255,26,61,.12), transparent 62%),
-        radial-gradient(900px 680px at 55% 115%, rgba(255,255,255,.03), transparent 62%),
+        radial-gradient(900px 540px at 50% -10%, rgba(255,255,255,.05), transparent 58%),
+        radial-gradient(900px 650px at 85% 0%, rgba(255,26,61,.14), transparent 64%),
+        radial-gradient(900px 680px at 15% 110%, rgba(255,255,255,.03), transparent 62%),
         linear-gradient(180deg, rgba(255,255,255,.02), transparent 34%),
         var(--bg);
       letter-spacing:.18px;
@@ -54,43 +57,6 @@
       overflow-x:hidden;
     }
 
-    /* Architectural ribbons: MONO + RED only */
-    .ribbon{
-      position: fixed;
-      inset: -130px -130px auto auto;
-      width: 560px;
-      height: 560px;
-      opacity: .85;
-      pointer-events:none;
-      z-index:0;
-      background:
-        radial-gradient(closest-side, rgba(255,26,61,.18), transparent 66%),
-        radial-gradient(closest-side, rgba(255,255,255,.07), transparent 72%),
-        conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.06), rgba(255,255,255,.0));
-      border-radius: 62% 38% 55% 45% / 52% 48% 52% 48%;
-      transform: rotate(16deg);
-      box-shadow: 0 70px 140px rgba(0,0,0,.40);
-      border: 1px solid rgba(255,255,255,.06);
-    }
-    .ribbon2{
-      position: fixed;
-      inset: auto auto -180px -160px;
-      width: 680px;
-      height: 680px;
-      opacity: .70;
-      pointer-events:none;
-      z-index:0;
-      background:
-        radial-gradient(closest-side, rgba(255,255,255,.06), transparent 64%),
-        radial-gradient(closest-side, rgba(255,26,61,.12), transparent 70%),
-        conic-gradient(from 90deg, rgba(255,255,255,.0), rgba(255,255,255,.05), rgba(255,255,255,.0));
-      border-radius: 48% 52% 40% 60% / 45% 48% 52% 55%;
-      transform: rotate(-14deg);
-      border: 1px solid rgba(255,255,255,.05);
-      box-shadow: 0 60px 140px rgba(0,0,0,.40);
-    }
-
-    /* Subtle film-grain */
     .grain{
       position: fixed;
       inset: 0;
@@ -102,7 +68,7 @@
     }
 
     .wrap{
-      max-width: 1260px;
+      max-width: 1320px;
       margin: 0 auto;
       padding: 34px 18px 58px;
       position:relative;
@@ -111,30 +77,42 @@
 
     header{
       display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:18px;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      gap:10px;
       margin-bottom: 16px;
     }
 
     h1{
       margin:0;
       font-family: var(--script);
-      font-size: clamp(28px, 3.1vw, 46px);
+      font-size: clamp(44px, 5.2vw, 78px);
       font-weight: 400;
-      line-height:1.1;
+      line-height:1.05;
       text-decoration: underline;
-      text-underline-offset: 12px;
+      text-underline-offset: 16px;
       text-decoration-thickness: 2px;
-      text-decoration-color: rgba(255,26,61,.60);
+      text-decoration-color: rgba(255,26,61,.68);
+      filter: drop-shadow(0 22px 60px rgba(0,0,0,.55));
     }
 
     .sub{
-      margin-top: 10px;
       color: var(--muted);
-      font-size: 14.7px;
+      font-size: 15.2px;
       line-height:1.65;
-      max-width: 880px;
+      max-width: 980px;
+      font-style: italic;
+    }
+
+    .topBadges{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+      margin-top: 6px;
     }
 
     .badge{
@@ -151,6 +129,7 @@
       white-space:nowrap;
       backdrop-filter: blur(10px);
     }
+
     .dot{
       width:9px;height:9px;border-radius:99px;
       background: linear-gradient(135deg, var(--accent), rgba(255,255,255,.85));
@@ -162,16 +141,16 @@
       grid-template-columns: 1.08fr 1fr;
       gap: 14px;
       align-items: start;
-      margin-top: 14px;
+      margin-top: 18px;
     }
     .stack{
       display:grid;
-      grid-template-rows: auto auto;
+      grid-template-rows: auto auto auto;
       gap: 14px;
     }
-    @media (max-width: 1020px){
-      header{ flex-direction:column; align-items:flex-start; }
+    @media (max-width: 1040px){
       .grid{ grid-template-columns: 1fr; }
+      header{ padding: 4px 0 6px; }
     }
 
     .card{
@@ -187,7 +166,6 @@
       position: relative;
     }
 
-    /* Court Seal watermark */
     .seal{
       position:absolute;
       inset:auto -40px -60px auto;
@@ -212,7 +190,7 @@
       margin:0;
       font-family: var(--serif);
       font-size: 16px;
-      font-weight: 900;
+      font-weight: 950;
       letter-spacing:.36px;
       text-transform: uppercase;
       text-decoration: underline;
@@ -242,7 +220,8 @@
       font-size: 13px;
       color: var(--muted);
       margin: 0 0 6px;
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing:.15px;
     }
 
     input, select, textarea{
@@ -274,14 +253,15 @@
       padding: 10px 12px;
       border-radius: 14px;
       cursor:pointer;
-      font-weight: 900;
+      font-weight: 950;
       font-size: 14px;
-      transition: transform .05s ease, border .15s ease, background .15s ease;
+      transition: transform .05s ease, border .15s ease, background .15s ease, opacity .15s ease;
       user-select:none;
       font-family: var(--serif);
     }
     button:hover{ background: rgba(255,255,255,.085); }
     button:active{ transform: translateY(1px); }
+    button[disabled]{ opacity:.55; cursor:not-allowed; }
 
     .primary{
       border-color: rgba(255,26,61,.58);
@@ -309,7 +289,7 @@
     }
     .lockRow .left{ display:flex; flex-direction:column; gap:4px; }
     .lockRow .left .t{
-      font-weight: 900;
+      font-weight: 950;
       text-transform: uppercase;
       letter-spacing: .35px;
       color: var(--ink);
@@ -319,7 +299,7 @@
       text-decoration-color: rgba(255,26,61,.40);
       text-decoration-thickness: 2px;
     }
-    .lockRow .left .d{ color: var(--muted); font-size: 13px; }
+    .lockRow .left .d{ color: var(--muted); font-size: 13px; font-style: italic; }
     .lockRow .right{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .lockRow input{ max-width: 290px; }
 
@@ -348,12 +328,39 @@
       color: var(--muted);
       font-size: 13px;
       white-space:nowrap;
-      font-weight: 800;
+      font-weight: 900;
     }
     .pill b{ color: var(--ink); font-weight: 950; }
 
+    .azbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      padding: 12px 16px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      align-items:center;
+      justify-content:center;
+    }
+    .azbtn{
+      border-radius: 999px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-weight: 950;
+      font-size: 12.5px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .azbtn.active{
+      border-color: rgba(255,26,61,.58);
+      background: rgba(255,26,61,.10);
+      color: rgba(255,255,255,.92);
+    }
+
     .tableWrap{ overflow:auto; -webkit-overflow-scrolling: touch; }
-    table{ width:100%; border-collapse:separate; border-spacing:0; min-width: 1260px; }
+    table{ width:100%; border-collapse:separate; border-spacing:0; min-width: 1440px; }
 
     thead th{
       position: sticky; top:0; z-index:2;
@@ -366,7 +373,6 @@
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing:.35px;
-      cursor:pointer;
       user-select:none;
       font-weight: 950;
       font-family: var(--serif);
@@ -375,7 +381,6 @@
       text-decoration-color: rgba(255,255,255,.12);
       text-decoration-thickness: 2px;
     }
-    thead th .sort{ font-family: var(--mono); font-size: 11px; color: var(--faint); margin-left: 8px; }
 
     tbody td{
       padding: 12px 12px;
@@ -386,8 +391,8 @@
     }
     tbody tr:hover td{ background: rgba(255,255,255,.03); }
 
-    .muted{ color: var(--muted); }
     .mono{ font-family: var(--mono); font-size: 12.5px; color: var(--faint); }
+    .muted{ color: var(--muted); }
 
     .tag{
       display:inline-flex;
@@ -399,30 +404,51 @@
       font-size: 13px;
       color: var(--muted);
       white-space:nowrap;
-      font-weight: 900;
+      font-weight: 950;
+      gap:8px;
     }
     .tag.good{ border-color: rgba(255,255,255,.18); color: rgba(246,246,248,.92); }
     .tag.warn{ border-color: rgba(255,26,61,.30); color: rgba(255,255,255,.92); }
     .tag.bad{ border-color: rgba(255,26,61,.46); color: rgba(255,26,61,.95); }
 
+    .editableHint{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color: var(--faint);
+      font-style: italic;
+      font-size: 13px;
+    }
+    .editPencil{
+      opacity: .75;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,.75);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 10px;
+      padding: 2px 6px;
+      background: rgba(0,0,0,.18);
+    }
+
     .cellActions{ display:flex; gap:8px; flex-wrap:wrap; }
     .cellActions button{ padding: 7px 10px; border-radius: 12px; font-size: 13.5px; }
 
-    /* Edicts section */
     .edictsTitle{
       font-family: var(--script);
-      font-size: 22px;
+      font-size: 24px;
       margin: 2px 0 6px;
       text-decoration: underline;
       text-underline-offset: 10px;
       text-decoration-thickness: 2px;
       text-decoration-color: rgba(255,26,61,.58);
+      text-align:center;
     }
     .edictsSub{
       font-style: italic;
       color: var(--muted);
       margin: 0 0 12px;
       line-height: 1.6;
+      text-align:center;
     }
     .edictsItalic{
       font-style: italic;
@@ -469,7 +495,7 @@
       background: rgba(255,255,255,.03);
       color: var(--muted);
       font-size: 12.8px;
-      font-weight: 900;
+      font-weight: 950;
       white-space:nowrap;
     }
     .tinyTag b{ color: var(--ink); font-weight: 950; }
@@ -489,7 +515,6 @@
       .ruleRow .inputs{ grid-template-columns: 1fr; }
     }
 
-    /* Drafting Mode */
     .draftBox{
       border: 1px solid var(--line);
       border-radius: 18px;
@@ -506,6 +531,7 @@
       text-underline-offset: 8px;
       text-decoration-thickness: 2px;
       text-decoration-color: rgba(255,26,61,.42);
+      text-align:center;
     }
     .draftHint{
       color: var(--muted);
@@ -513,6 +539,7 @@
       line-height: 1.55;
       margin: 0 0 10px;
       font-size: 14px;
+      text-align:center;
     }
     .draftGrid{
       display:grid;
@@ -535,7 +562,32 @@
       word-break: break-word;
     }
 
-    /* Modal dossier */
+    .cats{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 6px;
+    }
+    .catChip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-weight: 950;
+      font-size: 13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .catChip.on{
+      border-color: rgba(255,26,61,.48);
+      background: rgba(255,26,61,.10);
+      color: rgba(255,255,255,.92);
+    }
+
     .modalBackdrop{
       position: fixed;
       inset: 0;
@@ -544,11 +596,11 @@
       align-items:center;
       justify-content:center;
       padding: 18px;
-      z-index: 100;
+      z-index: 120;
       backdrop-filter: blur(10px);
     }
     .modal{
-      width: min(980px, 100%);
+      width: min(1040px, 100%);
       border-radius: 26px;
       border: 1px solid rgba(255,255,255,.12);
       box-shadow: 0 44px 140px rgba(0,0,0,.72);
@@ -558,12 +610,6 @@
         linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.24));
       overflow:hidden;
       position:relative;
-    }
-    .modal .seal{
-      inset:auto -70px -90px auto;
-      width: 520px;
-      height: 520px;
-      opacity: .08;
     }
     .modalHd{
       padding: 18px 18px 14px;
@@ -577,7 +623,7 @@
     .modalTitle{
       margin:0;
       font-family: var(--script);
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 400;
       text-decoration: underline;
       text-underline-offset: 10px;
@@ -628,9 +674,9 @@
       font-size: 16px;
       line-height: 1.65;
       margin-top: 4px;
+      white-space: pre-wrap;
     }
 
-    /* Toast */
     .toast{
       position: fixed;
       left: 50%;
@@ -646,7 +692,7 @@
       box-shadow: var(--shadow2);
       color: var(--muted);
       font-size: 14px;
-      z-index: 120;
+      z-index: 140;
       backdrop-filter: blur(12px);
     }
     .toast .spark{
@@ -664,53 +710,53 @@
       border-radius: 7px;
       background: rgba(255,255,255,.03);
     }
+
+    .warningStrip{
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,26,61,.07);
+      color: rgba(255,255,255,.82);
+      font-style: italic;
+      line-height: 1.55;
+      font-size: 13.2px;
+    }
   </style>
 </head>
 
 <body>
-  <div class="ribbon"></div>
-  <div class="ribbon2"></div>
   <div class="grain"></div>
 
   <div class="wrap">
     <header>
-      <div>
-        <h1>The Register of Adversaries</h1>
-        <div class="sub">
-          A private index of adversaries, nemeses, foes, and oppressors — with a
-          <b>Violation Meter</b> driven by <i>Gabe’s Edicts and Rules</i>, and automatic ranking.
-          <span class="mono">Ctrl</span>+<span class="mono">K</span> focuses search.
-        </div>
+      <h1>Gabe’s Register of Adversaries</h1>
+      <div class="sub">
+        A ceremonially ordered index of adversaries, nemeses, foes, and oppressors — calibrated by
+        <b>Gabe’s Edicts and Rules</b>, weighted scoring, and an A–Z partition. <span class="mono">Ctrl</span>+<span class="mono">K</span> focuses search.
       </div>
-      <div class="badge" title="Autosaves in your browser">
-        <span class="dot"></span>
-        <span><b id="count">0</b> entries • autosaved</span>
+
+      <div class="topBadges">
+        <div class="badge" title="Autosaves in your browser">
+          <span class="dot"></span>
+          <span><b id="count">0</b> entries • autosaved</span>
+        </div>
+        <div class="badge" title="Your data is stored in this browser unless you export/import.">
+          <span class="dot"></span>
+          <span>Local archive • export CSV for portability</span>
+        </div>
       </div>
     </header>
 
     <div class="grid">
-      <!-- LEFT: Editor + Edicts -->
+      <!-- LEFT: Editor + Edicts + Calibration -->
       <div class="stack">
         <!-- Editor -->
         <section class="card locked" id="editorCard" aria-label="Entry editor">
-          <!-- Seal watermark -->
           <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
-            <defs>
-              <radialGradient id="g" cx="50%" cy="45%" r="60%">
-                <stop offset="0%" stop-color="rgba(255,26,61,.30)"/>
-                <stop offset="55%" stop-color="rgba(255,255,255,.10)"/>
-                <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-              </radialGradient>
-            </defs>
             <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>
-            <circle cx="100" cy="100" r="72" fill="url(#g)" stroke="rgba(255,26,61,.28)" stroke-width="1.2"/>
-            <path d="M100 34
-                     C116 52, 138 62, 160 66
-                     C150 86, 150 114, 160 134
-                     C138 138, 116 148, 100 166
-                     C84 148, 62 138, 40 134
-                     C50 114, 50 86, 40 66
-                     C62 62, 84 52, 100 34Z"
+            <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,26,61,.24)" stroke-width="1.2"/>
+            <path d="M100 34 C116 52, 138 62, 160 66 C150 86, 150 114, 160 134
+                     C138 138, 116 148, 100 166 C84 148, 62 138, 40 134
+                     C50 114, 50 86, 40 66 C62 62, 84 52, 100 34Z"
                   fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.2"/>
             <path d="M74 108 L100 60 L126 108 L100 140 Z" fill="rgba(255,26,61,.18)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
             <circle cx="100" cy="100" r="8" fill="rgba(255,255,255,.22)"/>
@@ -718,13 +764,20 @@
 
           <div class="hd">
             <h2>Entry Editor</h2>
-            <div class="hint"><span class="kbd">Ctrl</span>+<span class="kbd">K</span> focus search • click a row to open dossier</div>
+            <div class="hint">
+              Inline edits: click a cell when unlocked • <span class="kbd">Esc</span> closes modal
+            </div>
+          </div>
+
+          <div class="warningStrip">
+            Note: This is a <b>private ledger</b>. Avoid publishing sensitive personal data you wouldn’t want indexed by others.
+            Export if you need portability; otherwise it lives locally in this browser.
           </div>
 
           <div class="lockRow">
             <div class="left">
               <div class="t" id="lockTitle">Edit Mode Locked</div>
-              <div class="d" id="lockDesc">Enter passphrase to add/edit entries (stored locally as a hash).</div>
+              <div class="d" id="lockDesc">Enter passphrase to add/edit entries and statutes (stored locally as a hash).</div>
             </div>
             <div class="right">
               <input id="passphrase" type="password" placeholder="Passphrase…" />
@@ -739,7 +792,7 @@
               <div class="row">
                 <div>
                   <label for="name">Name</label>
-                  <input id="name" name="name" placeholder="e.g., X (formerly known as a friend)" required />
+                  <input id="name" name="name" placeholder="e.g., X (formerly ‘friend’)”" required />
                 </div>
                 <div>
                   <label for="date">Date of Offence</label>
@@ -750,49 +803,35 @@
               <div class="row">
                 <div>
                   <label for="offence">Offence Description</label>
-                  <input id="offence" name="offence" placeholder="Betrayal, gaslighting, sabotage, coercion…" required />
+                  <input id="offence" name="offence" placeholder="Betrayal, epistemic sabotage, reputational vandalism…" required />
                 </div>
                 <div>
                   <label for="relationship">Current Relationship</label>
-                  <select id="relationship" name="relationship">
-                    <option value="No Contact">No Contact</option>
-                    <option value="Civil">Civil</option>
-                    <option value="Strained">Strained</option>
-                    <option value="Unknown">Unknown</option>
-                    <option value="Active Hostility">Active Hostility</option>
-                    <option value="Reconciled">Reconciled</option>
-                  </select>
+                  <select id="relationship" name="relationship"></select>
                 </div>
               </div>
 
               <div class="row">
                 <div>
                   <label for="verdict">Verdict</label>
-                  <select id="verdict" name="verdict">
-                    <option value="Under Review">Under Review</option>
-                    <option value="Guilty">Guilty</option>
-                    <option value="Acquitted">Acquitted</option>
-                    <option value="Exiled">Exiled</option>
-                    <option value="Sentenced to Irrelevance">Sentenced to Irrelevance</option>
-                    <option value="Pardoned by Grace">Pardoned by Grace</option>
-                    <option value="Pardoned (Regretful)">Pardoned (Regretful)</option>
-                    <option value="Irredeemable">Irredeemable</option>
-                  </select>
+                  <select id="verdict" name="verdict"></select>
                 </div>
                 <div>
                   <label for="severity">Declared Severity</label>
-                  <select id="severity" name="severity">
-                    <option value="Minor">Minor</option>
-                    <option value="Notable">Notable</option>
-                    <option value="Grievous">Grievous</option>
-                    <option value="Catastrophic">Catastrophic</option>
-                  </select>
+                  <select id="severity" name="severity"></select>
                 </div>
               </div>
 
               <div>
+                <label>Offence Subcategories (click to toggle)</label>
+                <div class="cats" id="catChips"></div>
+              </div>
+
+              <div style="height:10px"></div>
+
+              <div>
                 <label for="commentary">Commentary</label>
-                <textarea id="commentary" name="commentary" placeholder="Write the footnote they earned."></textarea>
+                <textarea id="commentary" name="commentary" placeholder="The footnote they earned."></textarea>
               </div>
 
               <input type="hidden" id="editingId" />
@@ -802,11 +841,116 @@
                 <button class="ghost" type="button" id="clearBtn">Clear</button>
                 <button class="danger" type="button" id="wipeBtn" title="Deletes everything from this browser.">Wipe Register</button>
               </div>
+
+              <div class="editableHint" style="margin-top:10px;">
+                <span class="editPencil">TIP</span>
+                Once unlocked, you can <b>click any table cell</b> to edit it immediately.
+              </div>
             </form>
           </div>
 
           <div class="footerNote">
-            Threat scoring is a <b>personal heuristic</b> driven by <i>Gabe’s Edicts and Rules</i>, declared severity, relationship context, and intensity markers.
+            The <b>Existential Threat / Violation Meter</b> is a personal scoring heuristic: severity + relationship context + subcategory weighting +
+            statute hits + intensity markers. You can edit all weights in <b>Calibration</b>.
+          </div>
+        </section>
+
+        <!-- Calibration -->
+        <section class="card locked" id="calCard" aria-label="Calibration">
+          <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.20)" stroke-width="1.6"/>
+            <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,26,61,.22)" stroke-width="1.2"/>
+            <path d="M65 120 C80 95, 90 72, 100 58 C110 72, 120 95, 135 120
+                     C120 126, 112 136, 100 150 C88 136, 80 126, 65 120Z"
+                  fill="rgba(255,26,61,.10)" stroke="rgba(255,255,255,.16)" stroke-width="1.1"/>
+          </svg>
+
+          <div class="hd">
+            <h2>Calibration</h2>
+            <div class="hint">Edit mode required • changes apply instantly</div>
+          </div>
+
+          <div class="lockRow">
+            <div class="left">
+              <div class="t">Weighting Controls</div>
+              <div class="d">You asked for editable weighting: this is the control panel.</div>
+            </div>
+            <div class="right">
+              <button type="button" class="ghost" id="resetCalBtn" data-edit-action="1">Restore Defaults</button>
+            </div>
+          </div>
+
+          <div class="bd">
+            <div class="row">
+              <div>
+                <label for="sevMinor">Severity: Minor</label>
+                <input id="sevMinor" type="number" min="0" max="100" step="1" />
+              </div>
+              <div>
+                <label for="sevNotable">Severity: Notable</label>
+                <input id="sevNotable" type="number" min="0" max="100" step="1" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="sevGrievous">Severity: Grievous</label>
+                <input id="sevGrievous" type="number" min="0" max="120" step="1" />
+              </div>
+              <div>
+                <label for="sevCat">Severity: Catastrophic</label>
+                <input id="sevCat" type="number" min="0" max="140" step="1" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="relReconciled">Relationship: Reconciled</label>
+                <input id="relReconciled" type="number" min="-30" max="30" step="1" />
+              </div>
+              <div>
+                <label for="relCivil">Relationship: Civil</label>
+                <input id="relCivil" type="number" min="-30" max="30" step="1" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="relStrained">Relationship: Strained</label>
+                <input id="relStrained" type="number" min="-30" max="40" step="1" />
+              </div>
+              <div>
+                <label for="relNoContact">Relationship: No Contact</label>
+                <input id="relNoContact" type="number" min="-30" max="50" step="1" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="relHostile">Relationship: Active Hostility</label>
+                <input id="relHostile" type="number" min="-30" max="60" step="1" />
+              </div>
+              <div>
+                <label for="catMultiplier">Subcategory Multiplier</label>
+                <input id="catMultiplier" type="number" min="0" max="3" step="0.05" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="ruleMultiplier">Edicts Multiplier</label>
+                <input id="ruleMultiplier" type="number" min="0" max="3" step="0.05" />
+              </div>
+              <div>
+                <label for="intensityMultiplier">Intensity Multiplier</label>
+                <input id="intensityMultiplier" type="number" min="0" max="3" step="0.05" />
+              </div>
+            </div>
+          </div>
+
+          <div class="footerNote">
+            If you want the meter to be harsher, raise <b>Edicts Multiplier</b> and the higher severity bases; if you want it more forgiving,
+            lower multipliers and soften the relationship penalties.
           </div>
         </section>
 
@@ -815,25 +959,22 @@
           <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
             <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>
             <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,26,61,.24)" stroke-width="1.2"/>
-            <path d="M100 38 C120 58, 148 66, 164 70
-                     C152 92, 152 108, 164 130
-                     C148 134, 120 142, 100 162
-                     C80 142, 52 134, 36 130
-                     C48 108, 48 92, 36 70
-                     C52 66, 80 58, 100 38Z"
+            <path d="M100 38 C120 58, 148 66, 164 70 C152 92, 152 108, 164 130
+                     C148 134, 120 142, 100 162 C80 142, 52 134, 36 130
+                     C48 108, 48 92, 36 70 C52 66, 80 58, 100 38Z"
                   fill="none" stroke="rgba(255,255,255,.20)" stroke-width="1.2"/>
             <path d="M82 110 L100 74 L118 110 L100 134 Z" fill="rgba(255,26,61,.14)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
           </svg>
 
           <div class="hd">
             <h2>Gabe’s Edicts and Rules</h2>
-            <div class="hint"><span class="kbd">Edit Mode</span> required to alter statutes</div>
+            <div class="hint">Draft & edit statutes • regex + weight + domain all editable</div>
           </div>
 
           <div class="lockRow">
             <div class="left">
               <div class="t">Statute Book</div>
-              <div class="d"><span class="edictsItalic">Italic, cursive, and binding.</span> These weights shape the Violation Meter.</div>
+              <div class="d"><span class="edictsItalic">Italic, cursive, binding.</span> Your meter obeys what you decree.</div>
             </div>
             <div class="right">
               <button type="button" class="ghost" id="resetRulesBtn" data-edit-action="1">Restore Default Edicts</button>
@@ -844,31 +985,38 @@
           <div class="bd">
             <div class="edictsTitle">Gabe’s Edicts and Rules</div>
             <div class="edictsSub">
-              <span class="edictsItalic">“Let the record show: harm has structure.”</span>
-              Edit any edict below — its <b>Weight</b> affects the meter. <b>Pattern</b> is a regex tested against offence + commentary.
+              <span class="edictsItalic">“Let the record show: harm has structure, and structure is searchable.”</span>
+              Pattern matches against offence + commentary. Domain is your taxonomy.
             </div>
 
-            <!-- Drafting Mode (plain-English → keywords → regex) -->
             <div class="draftBox">
               <div class="draftTitle">Statute Drafting Mode</div>
               <p class="draftHint">
-                Write the harm in plain English; extract keywords; generate a regex. Then click <b>Create Edict</b>.
-                <span class="mono">Nothing leaves your browser.</span>
+                Write the harm plainly; it extracts elevated keywords and produces a working regex. Choose your domain. Create the edict.
               </p>
               <div class="draftGrid">
                 <div>
-                  <label for="draftText">Draft (plain English)</label>
-                  <textarea id="draftText" placeholder="e.g., Public humiliation, ridicule, shaming — especially in group settings."></textarea>
+                  <label for="draftText">Draft (plain English, or poetic precision)</label>
+                  <textarea id="draftText" placeholder="e.g., Epistemic sabotage: undermining my credibility, distorting facts, weaponising doubt."></textarea>
                 </div>
                 <div>
-                  <label for="draftWeight">Suggested Weight</label>
-                  <input id="draftWeight" type="number" min="-20" max="60" step="1" value="12" />
-                  <div style="height:10px"></div>
+                  <div class="row" style="margin-bottom:10px;">
+                    <div>
+                      <label for="draftWeight">Weight</label>
+                      <input id="draftWeight" type="number" min="-20" max="80" step="1" value="14" />
+                    </div>
+                    <div>
+                      <label for="draftDomain">Domain</label>
+                      <select id="draftDomain"></select>
+                    </div>
+                  </div>
+
                   <label>Generated Pattern (preview)</label>
                   <div class="draftOut" id="draftOut">—</div>
+
                   <div style="height:10px"></div>
                   <div class="actions" style="margin:0;">
-                    <button type="button" class="ghost" id="draftExtractBtn" data-edit-action="1">Extract Keywords</button>
+                    <button type="button" class="ghost" id="draftExtractBtn" data-edit-action="1">Extract & Elevate</button>
                     <button type="button" class="primary" id="draftCreateBtn" data-edit-action="1">Create Edict</button>
                   </div>
                 </div>
@@ -879,7 +1027,7 @@
           </div>
 
           <div class="footerNote">
-            Rule math: (severity base) + (relationship modifier) + (edicts hit) + (intensity markers), then a soft-cap to 100.
+            If you want the statute engine to bite harder, raise weights or increase <b>Edicts Multiplier</b> in Calibration.
           </div>
         </section>
       </div>
@@ -889,42 +1037,25 @@
         <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
           <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.6"/>
           <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,26,61,.20)" stroke-width="1.2"/>
-          <path d="M70 116 C82 102, 92 78, 100 58
-                   C108 78, 118 102, 130 116
-                   C114 122, 108 132, 100 146
-                   C92 132, 86 122, 70 116Z"
+          <path d="M70 116 C82 102, 92 78, 100 58 C108 78, 118 102, 130 116
+                   C114 122, 108 132, 100 146 C92 132, 86 122, 70 116Z"
                 fill="rgba(255,26,61,.12)" stroke="rgba(255,255,255,.16)" stroke-width="1"/>
         </svg>
 
         <div class="toolbar">
           <div class="grow">
             <label for="search" style="margin:0 0 6px;">Search</label>
-            <input id="search" placeholder="Search name, offence, verdict, relationship, commentary…" />
+            <input id="search" placeholder="Search name, offence, verdict, relationship, commentary, domain hits…" />
           </div>
 
           <div style="min-width:240px;">
             <label for="filterVerdict" style="margin:0 0 6px;">Filter Verdict</label>
-            <select id="filterVerdict">
-              <option value="">All</option>
-              <option>Under Review</option>
-              <option>Guilty</option>
-              <option>Acquitted</option>
-              <option>Exiled</option>
-              <option>Sentenced to Irrelevance</option>
-              <option>Pardoned by Grace</option>
-              <option>Pardoned (Regretful)</option>
-              <option>Irredeemable</option>
-            </select>
+            <select id="filterVerdict"></select>
           </div>
 
-          <div style="min-width:240px;">
-            <label for="sortPreset" style="margin:0 0 6px;">Sort Preset</label>
-            <select id="sortPreset">
-              <option value="rank_desc">Rank: Highest Violation</option>
-              <option value="date_desc">Date: Newest</option>
-              <option value="name_asc">Name: A→Z</option>
-              <option value="verdict_asc">Verdict: A→Z</option>
-            </select>
+          <div style="min-width:260px;">
+            <label for="orderMode" style="margin:0 0 6px;">Ordering</label>
+            <select id="orderMode"></select>
           </div>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -934,20 +1065,24 @@
           </div>
         </div>
 
+        <!-- A–Z index -->
+        <div class="azbar" id="azbar"></div>
+
         <div class="tableWrap">
           <table role="table" aria-label="Adversary register table">
             <thead>
               <tr>
-                <th data-key="rank">Rank <span class="sort" id="sort-rank"></span></th>
-                <th data-key="threat">Violation Meter <span class="sort" id="sort-threat"></span></th>
-                <th data-key="name">Name <span class="sort" id="sort-name"></span></th>
-                <th data-key="offence">Offence <span class="sort" id="sort-offence"></span></th>
-                <th data-key="date">Date <span class="sort" id="sort-date"></span></th>
-                <th data-key="relationship">Relationship <span class="sort" id="sort-relationship"></span></th>
-                <th data-key="verdict">Verdict <span class="sort" id="sort-verdict"></span></th>
-                <th data-key="commentary">Commentary <span class="sort" id="sort-commentary"></span></th>
-                <th data-key="severity">Severity <span class="sort" id="sort-severity"></span></th>
-                <th data-key="signals">Edict Hits <span class="sort" id="sort-signals"></span></th>
+                <th>Rank</th>
+                <th>Violation Meter</th>
+                <th>Name</th>
+                <th>Offence</th>
+                <th>Date of Offence</th>
+                <th>Subcategories</th>
+                <th>Relationship</th>
+                <th>Verdict</th>
+                <th>Commentary</th>
+                <th>Severity</th>
+                <th>Edict Hits</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -957,32 +1092,20 @@
 
         <div class="footerNote">
           <span class="pill">Showing <b id="showing">0</b> / <b id="total">0</b></span>
-          <span class="pill">Sorted by <b id="sortedBy">rank</b> <b id="sortedDir">↓</b></span>
+          <span class="pill">View <b id="viewLetter">ALL</b></span>
           <span class="pill">Edit mode: <b id="editStatus">locked</b></span>
-          <span class="pill">Dossier: click a row • <span class="kbd">Esc</span> closes</span>
+          <span class="pill">Click a cell to edit when unlocked</span>
         </div>
       </section>
     </div>
   </div>
 
-  <!-- Dossier Modal -->
+  <!-- Quick Edit / Dossier Modal -->
   <div class="modalBackdrop" id="modalBackdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Case File">
-      <svg class="seal" viewBox="0 0 200 200" aria-hidden="true">
-        <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.20)" stroke-width="1.6"/>
-        <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,26,61,.22)" stroke-width="1.2"/>
-        <path d="M100 40 C120 62, 150 70, 164 72
-                 C152 92, 152 108, 164 128
-                 C150 130, 120 138, 100 160
-                 C80 138, 50 130, 36 128
-                 C48 108, 48 92, 36 72
-                 C50 70, 80 62, 100 40Z"
-              fill="rgba(255,26,61,.10)" stroke="rgba(255,255,255,.16)" stroke-width="1.1"/>
-      </svg>
-
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Dossier">
       <div class="modalHd">
         <div>
-          <h2 class="modalTitle" id="dossierTitle">Case File</h2>
+          <h2 class="modalTitle" id="dossierTitle">Dossier</h2>
           <div class="subline" id="dossierSub">—</div>
         </div>
         <button class="ghost closeX" id="closeModalBtn" type="button">Close ✕</button>
@@ -990,33 +1113,43 @@
       <div class="modalBd">
         <div class="dossierGrid">
           <div class="dossierCard">
-            <h3>Verdict</h3>
-            <p class="big" id="dossierVerdict">—</p>
-            <p id="dossierRel">—</p>
-          </div>
-          <div class="dossierCard">
             <h3>Violation Meter</h3>
             <p class="big" id="dossierThreat">—</p>
-            <p id="dossierEmojiLine">—</p>
+            <p id="dossierThreatExplain">—</p>
+          </div>
+
+          <div class="dossierCard">
+            <h3>Verdict & Relationship</h3>
+            <p class="big" id="dossierVerdict">—</p>
+            <p class="big" id="dossierRel">—</p>
           </div>
 
           <div class="dossierCard">
             <h3>Offence</h3>
             <p class="big" id="dossierOffence">—</p>
           </div>
+
           <div class="dossierCard">
             <h3>Commentary</h3>
             <p class="big" id="dossierCommentary">—</p>
           </div>
 
           <div class="dossierCard">
+            <h3>Subcategories</h3>
+            <p class="big" id="dossierCats">—</p>
+          </div>
+
+          <div class="dossierCard">
             <h3>Edict Hits</h3>
             <p class="big" id="dossierHits">—</p>
           </div>
-          <div class="dossierCard">
-            <h3>Meta</h3>
-            <p id="dossierMeta" class="big">—</p>
-          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="actions" id="dossierActions">
+          <button class="primary" type="button" id="dossierEditBtn" data-edit-action="1">Edit in Left Panel</button>
+          <button class="danger" type="button" id="dossierDeleteBtn" data-edit-action="1">Delete</button>
         </div>
       </div>
     </div>
@@ -1030,48 +1163,122 @@
 <script>
 (() => {
   // ---------------- Storage Keys ----------------
-  const STORAGE_KEY = "adversary_register_v4_ahsposter";
-  const RULES_KEY   = "adversary_register_rules_v2_ahsposter";
-  const PASS_HASH_KEY = "adversary_register_passhash_v1";
-  const SESSION_UNLOCK_KEY = "adversary_register_unlocked_session_v1";
+  const STORAGE_KEY     = "gabes_register_entries_v1";
+  const RULES_KEY       = "gabes_register_rules_v1";
+  const CAL_KEY         = "gabes_register_calibration_v1";
+  const PASS_HASH_KEY   = "gabes_register_passhash_v1";
+  const SESSION_UNLOCK  = "gabes_register_unlocked_session_v1";
+
+  // ---------------- Enumerations ----------------
+  const RELATIONSHIPS = [
+    "Reconciled",
+    "Civil",
+    "Strained",
+    "Unknown",
+    "No Contact",
+    "Active Hostility"
+  ];
+
+  const VERDICTS = [
+    "Under Review",
+    "Guilty",
+    "Cancelled",
+    "Persona Non Grata",
+    "Socially Extinguished",
+    "Historically Condemned",
+    "Exiled",
+    "Relegated to Obscurity",
+    "Sentenced to Irrelevance",
+    "Pardoned by Grace",
+    "Pardoned (Regretful)",
+    "Acquitted",
+    "Irredeemable"
+  ];
+
+  const SEVERITIES = [
+    "Minor",
+    "Notable",
+    "Grievous",
+    "Catastrophic"
+  ];
+
+  const CATEGORIES = [
+    "Psychological",
+    "Emotional",
+    "Social",
+    "Professional",
+    "Financial",
+    "Reputational",
+    "Existential",
+    "Bodily / Safety",
+    "Spiritual / Symbolic",
+    "Compound"
+  ];
+
+  const DOMAINS = [
+    "violence",
+    "harassment",
+    "control",
+    "psychological",
+    "betrayal",
+    "sabotage",
+    "humiliation",
+    "financial",
+    "discrimination",
+    "abandonment",
+    "epistemic",
+    "reputation",
+    "exploitation",
+    "boundary-violation",
+    "other"
+  ];
+
+  const ORDER_MODES = [
+    { value: "none", label: "No order (as entered)" },
+    { value: "rank_desc", label: "Violation: highest first" },
+    { value: "rank_asc", label: "Violation: lowest first" },
+    { value: "name_asc", label: "Name: A → Z" },
+    { value: "name_desc", label: "Name: Z → A" },
+    { value: "date_desc", label: "Date: newest" },
+    { value: "date_asc", label: "Date: oldest" }
+  ];
 
   // ---------------- State ----------------
-  /** @type {{id:string,name:string,offence:string,date:string,relationship:string,verdict:string,commentary:string,severity:string,createdAt:number,updatedAt:number}[]} */
   let entries = [];
-  /** @type {{id:string,title:string,description:string,pattern:string,weight:number,domain:string,enabled:boolean}[]} */
   let rules = [];
+  let cal = defaultCalibration();
 
-  let sortKey = "rank";
-  let sortDir = "desc";
   let searchText = "";
   let filterVerdict = "";
+  let orderMode = "rank_desc";
+  let letterFilter = ""; // "" = ALL
 
   // ---------------- DOM ----------------
   const $ = (id) => document.getElementById(id);
 
   const editorCard = $("editorCard");
   const edictsCard = $("edictsCard");
+  const calCard    = $("calCard");
   const editStatus = $("editStatus");
+  const countEl    = $("count");
 
-  const lockTitle = $("lockTitle");
-  const lockDesc = $("lockDesc");
+  const lockTitle  = $("lockTitle");
+  const lockDesc   = $("lockDesc");
   const passphrase = $("passphrase");
-  const unlockBtn = $("unlockBtn");
+  const unlockBtn  = $("unlockBtn");
   const setPassBtn = $("setPassBtn");
-  const lockBtn = $("lockBtn");
+  const lockBtn    = $("lockBtn");
 
   const form = $("entryForm");
   const tbody = $("tbody");
-  const count = $("count");
 
-  const showing = $("showing");
-  const total = $("total");
-  const sortedBy = $("sortedBy");
-  const sortedDirEl = $("sortedDir");
+  const showingEl = $("showing");
+  const totalEl   = $("total");
+  const viewLetterEl = $("viewLetter");
 
-  const search = $("search");
+  const searchEl = $("search");
   const filterVerdictEl = $("filterVerdict");
-  const sortPreset = $("sortPreset");
+  const orderModeEl = $("orderMode");
 
   const nameEl = $("name");
   const dateEl = $("date");
@@ -1083,6 +1290,8 @@
   const editingIdEl = $("editingId");
   const saveBtn = $("saveBtn");
 
+  const catChips = $("catChips");
+
   const clearBtn = $("clearBtn");
   const wipeBtn = $("wipeBtn");
   const exportBtn = $("exportBtn");
@@ -1093,30 +1302,51 @@
   const resetRulesBtn = $("resetRulesBtn");
   const addRuleBtn = $("addRuleBtn");
 
-  // Drafting mode
   const draftText = $("draftText");
   const draftWeight = $("draftWeight");
+  const draftDomain = $("draftDomain");
   const draftOut = $("draftOut");
   const draftExtractBtn = $("draftExtractBtn");
   const draftCreateBtn = $("draftCreateBtn");
 
-  const toast = $("toast");
-  const toastMsg = $("toastMsg");
-  let toastTimer = null;
+  const azbar = $("azbar");
+
+  // Calibration inputs
+  const sevMinor = $("sevMinor");
+  const sevNotable = $("sevNotable");
+  const sevGrievous = $("sevGrievous");
+  const sevCat = $("sevCat");
+
+  const relReconciled = $("relReconciled");
+  const relCivil = $("relCivil");
+  const relStrained = $("relStrained");
+  const relNoContact = $("relNoContact");
+  const relHostile = $("relHostile");
+
+  const catMultiplier = $("catMultiplier");
+  const ruleMultiplier = $("ruleMultiplier");
+  const intensityMultiplier = $("intensityMultiplier");
+  const resetCalBtn = $("resetCalBtn");
 
   // Modal
   const modalBackdrop = $("modalBackdrop");
   const closeModalBtn = $("closeModalBtn");
   const dossierTitle = $("dossierTitle");
   const dossierSub = $("dossierSub");
+  const dossierThreat = $("dossierThreat");
+  const dossierThreatExplain = $("dossierThreatExplain");
   const dossierVerdict = $("dossierVerdict");
   const dossierRel = $("dossierRel");
-  const dossierThreat = $("dossierThreat");
-  const dossierEmojiLine = $("dossierEmojiLine");
   const dossierOffence = $("dossierOffence");
   const dossierCommentary = $("dossierCommentary");
+  const dossierCats = $("dossierCats");
   const dossierHits = $("dossierHits");
-  const dossierMeta = $("dossierMeta");
+  const dossierEditBtn = $("dossierEditBtn");
+  const dossierDeleteBtn = $("dossierDeleteBtn");
+
+  const toast = $("toast");
+  const toastMsg = $("toastMsg");
+  let toastTimer = null;
 
   // ---------------- Helpers ----------------
   function uid(){
@@ -1136,7 +1366,7 @@
     toastMsg.textContent = msg;
     toast.style.display = "inline-flex";
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => (toast.style.display = "none"), 1750);
+    toastTimer = setTimeout(() => (toast.style.display = "none"), 1800);
   }
 
   // ---------------- Edit Lock ----------------
@@ -1146,11 +1376,12 @@
     return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
   }
   function hasPassphrase(){ return !!localStorage.getItem(PASS_HASH_KEY); }
-  function sessionUnlocked(){ return sessionStorage.getItem(SESSION_UNLOCK_KEY) === "1"; }
+  function sessionUnlocked(){ return sessionStorage.getItem(SESSION_UNLOCK) === "1"; }
 
   function setLockedUI(locked){
     editorCard.classList.toggle("locked", locked);
     edictsCard.classList.toggle("locked", locked);
+    calCard.classList.toggle("locked", locked);
     editStatus.textContent = locked ? "locked" : "unlocked";
 
     lockBtn.style.display = locked ? "none" : "inline-block";
@@ -1159,51 +1390,36 @@
     lockTitle.textContent = locked ? "Edit Mode Locked" : "Edit Mode Unlocked";
     lockDesc.textContent = locked
       ? (hasPassphrase()
-          ? "Enter passphrase to add/edit entries."
+          ? "Enter passphrase to add/edit entries and statutes."
           : "No passphrase set. Click “Set / Reset Passphrase”.")
-      : "You may now add, edit, delete, and draft Gabe’s Edicts. Lock again when finished.";
+      : "You may now edit: entries, categories, verdicts, statutes, and calibration.";
 
-    document.querySelectorAll("[data-edit-action]").forEach(btn => {
-      btn.disabled = locked;
-      btn.style.opacity = locked ? ".5" : "1";
-      btn.style.pointerEvents = locked ? "none" : "auto";
-    });
+    document.querySelectorAll("[data-edit-action]").forEach(btn => btn.disabled = locked);
   }
 
   async function unlockAttempt(){
     const phrase = passphrase.value || "";
-    if (!phrase.trim()){
-      toastify("Passphrase required.");
-      return;
-    }
+    if (!phrase.trim()){ toastify("Passphrase required."); return; }
     const stored = localStorage.getItem(PASS_HASH_KEY);
-    if (!stored){
-      toastify("No passphrase set yet.");
-      return;
-    }
+    if (!stored){ toastify("No passphrase set yet."); return; }
     const h = await sha256(phrase);
     if (h === stored){
-      sessionStorage.setItem(SESSION_UNLOCK_KEY, "1");
+      sessionStorage.setItem(SESSION_UNLOCK, "1");
       passphrase.value = "";
       setLockedUI(false);
       toastify("Unlocked.");
       renderAll();
-    }else{
-      toastify("Incorrect passphrase.");
-    }
+    } else toastify("Incorrect passphrase.");
   }
 
   async function setOrResetPassphrase(){
-    const p1 = prompt("Set a passphrase for Edit Mode.\nStored locally as a hash.\n(Keep it memorable.)");
+    const p1 = prompt("Set a passphrase for Edit Mode.\nStored locally as a hash.\n(Choose something memorable.)");
     if (!p1) return;
     const p2 = prompt("Confirm passphrase.");
-    if (p1 !== p2){
-      alert("Passphrases did not match.");
-      return;
-    }
+    if (p1 !== p2){ alert("Passphrases did not match."); return; }
     const h = await sha256(p1);
     localStorage.setItem(PASS_HASH_KEY, h);
-    sessionStorage.setItem(SESSION_UNLOCK_KEY, "1");
+    sessionStorage.setItem(SESSION_UNLOCK, "1");
     passphrase.value = "";
     setLockedUI(false);
     toastify("Passphrase set & unlocked.");
@@ -1211,142 +1427,209 @@
   }
 
   function lockNow(){
-    sessionStorage.removeItem(SESSION_UNLOCK_KEY);
+    sessionStorage.removeItem(SESSION_UNLOCK);
     setLockedUI(true);
     toastify("Locked.");
     renderAll();
   }
 
-  // ---------------- Default Edicts ----------------
+  // ---------------- Calibration ----------------
+  function defaultCalibration(){
+    return {
+      severityBase: {
+        "Minor": 18,
+        "Notable": 35,
+        "Grievous": 58,
+        "Catastrophic": 78
+      },
+      relationshipMod: {
+        "Reconciled": -6,
+        "Civil": -2,
+        "Unknown": 0,
+        "Strained": 5,
+        "No Contact": 9,
+        "Active Hostility": 12
+      },
+      multipliers: {
+        categories: 1.00,
+        rules: 1.00,
+        intensity: 1.00
+      }
+    };
+  }
+
+  function loadCalibration(){
+    try{
+      const raw = localStorage.getItem(CAL_KEY);
+      cal = raw ? JSON.parse(raw) : defaultCalibration();
+    }catch{
+      cal = defaultCalibration();
+    }
+  }
+
+  function saveCalibration(){
+    localStorage.setItem(CAL_KEY, JSON.stringify(cal));
+  }
+
+  function syncCalibrationUI(){
+    sevMinor.value = cal.severityBase.Minor ?? 18;
+    sevNotable.value = cal.severityBase.Notable ?? 35;
+    sevGrievous.value = cal.severityBase.Grievous ?? 58;
+    sevCat.value = cal.severityBase.Catastrophic ?? 78;
+
+    relReconciled.value = cal.relationshipMod.Reconciled ?? -6;
+    relCivil.value = cal.relationshipMod.Civil ?? -2;
+    relStrained.value = cal.relationshipMod.Strained ?? 5;
+    relNoContact.value = cal.relationshipMod["No Contact"] ?? 9;
+    relHostile.value = cal.relationshipMod["Active Hostility"] ?? 12;
+
+    catMultiplier.value = cal.multipliers.categories ?? 1;
+    ruleMultiplier.value = cal.multipliers.rules ?? 1;
+    intensityMultiplier.value = cal.multipliers.intensity ?? 1;
+  }
+
+  function wireCalibrationUI(){
+    const bind = (el, setter) => el.addEventListener("input", () => {
+      if (!sessionUnlocked()){ return; }
+      setter(Number(el.value));
+      saveCalibration();
+      renderTable();
+    });
+
+    bind(sevMinor, v => cal.severityBase.Minor = v);
+    bind(sevNotable, v => cal.severityBase.Notable = v);
+    bind(sevGrievous, v => cal.severityBase.Grievous = v);
+    bind(sevCat, v => cal.severityBase.Catastrophic = v);
+
+    bind(relReconciled, v => cal.relationshipMod.Reconciled = v);
+    bind(relCivil, v => cal.relationshipMod.Civil = v);
+    bind(relStrained, v => cal.relationshipMod.Strained = v);
+    bind(relNoContact, v => cal.relationshipMod["No Contact"] = v);
+    bind(relHostile, v => cal.relationshipMod["Active Hostility"] = v);
+
+    bind(catMultiplier, v => cal.multipliers.categories = v);
+    bind(ruleMultiplier, v => cal.multipliers.rules = v);
+    bind(intensityMultiplier, v => cal.multipliers.intensity = v);
+  }
+
+  function resetCalibration(){
+    if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
+    const ok = confirm("Restore default calibration weights?");
+    if (!ok) return;
+    cal = defaultCalibration();
+    saveCalibration();
+    syncCalibrationUI();
+    renderTable();
+    toastify("Calibration restored.");
+  }
+
+  // ---------------- Default Edicts (expanded Gabe-standard verbiage) ----------------
   function defaultRules(){
     return [
-      {
-        id: uid(),
-        title: "The Trident Clause",
-        description: "Explicit threats, violence, weapons, or stated intent to harm.",
-        pattern: "\\b(threat|threaten|kill|murder|harm|assault|violent|beat|stab|weapon|gun|knife)\\b",
-        weight: 26,
-        domain: "violence",
-        enabled: true
-      },
-      {
-        id: uid(),
-        title: "The Pursuit & Harassment Doctrine",
-        description: "Stalking, harassment, intimidation, blackmail, doxxing.",
-        pattern: "\\b(stalk|harass|harassment|follow(ed)?|dox|blackmail|intimidat|creep)\\b",
-        weight: 20,
-        domain: "harassment",
-        enabled: true
-      },
-      {
-        id: uid(),
-        title: "The Coercion Statute",
-        description: "Coercion, control, pressure, force, cornering, ultimatums.",
-        pattern: "\\b(coerc|control|force|pressur(e|ed)|ultimatum|corner(ed)?)\\b",
-        weight: 18,
-        domain: "control",
-        enabled: true
-      },
-      {
-        id: uid(),
-        title: "The Gaslighting Article",
-        description: "Reality distortion; undermining perception; making you doubt yourself.",
-        pattern: "\\b(gaslight|made me doubt|crazy|insane|imagining|overreact|reality)\\b",
-        weight: 18,
-        domain: "psychological",
-        enabled: true
-      },
-      {
-        id: uid(),
-        title: "The Betrayal Addendum",
-        description: "Betrayal, cheating, double-crossing, backstabbing.",
-        pattern: "\\b(betray|cheat|infidel|backstab|snake|two[- ]?faced|double[- ]?cross)\\b",
-        weight: 16,
-        domain: "betrayal",
-        enabled: true
-      },
-      {
-        id: uid(),
-        title: "The Sabotage Ordinance",
-        description: "Undermining, blocking, derailing, ruining plans, stonewalling.",
-        pattern: "\\b(sabotage|undermin|ruin(ed)?|derail|block(ed)?|stonewall)\\b",
-        weight: 14,
-        domain: "sabotage",
-        enabled: true
-      },
-      {
-        id: uid(),
-        title: "The Public Humiliation Clause",
-        description: "Mockery, shame, ridicule, humiliation, embarrassment.",
-        pattern: "\\b(humiliat|mock|shame|embarrass|ridicul)\\b",
-        weight: 12,
-        domain: "humiliation",
-        enabled: true
-      },
-      {
-        id: uid(),
-        title: "The Financial Injury Provision",
-        description: "Fraud, theft, extortion, money harm.",
-        pattern: "\\b(steal|stole|fraud|scam|money|debt|extort|owe|embezzle)\\b",
-        weight: 16,
-        domain: "financial",
-        enabled: true
-      },
-      {
-        id: uid(),
-        title: "The Discrimination Ban",
-        description: "Racism, sexism, ableism, bigotry, discrimination.",
-        pattern: "\\b(racist|sexist|misogyn|bigot|homophob|transphob|ableist|discriminat)\\b",
-        weight: 14,
-        domain: "discrimination",
-        enabled: true
-      },
-      {
-        id: uid(),
-        title: "The Abandonment Note",
-        description: "Ghosting, abandonment, discarding, vanishing.",
-        pattern: "\\b(abandon|ghost|left me|discard|vanish(ed)?)\\b",
-        weight: 10,
-        domain: "abandonment",
-        enabled: true
-      }
+      { id: uid(), title:"The Trident Clause", domain:"violence",
+        description:"Explicit threats, violence, weapons, or declared intent to harm — the kind of sentence that changes your nervous system.",
+        pattern:"\\b(threat|threaten|kill|murder|harm|assault|violent|beat|stab|weapon|gun|knife)\\b",
+        weight:26, enabled:true },
+      { id: uid(), title:"The Pursuit & Harassment Doctrine", domain:"harassment",
+        description:"Stalking, harassment, intimidation, blackmail, doxxing — coercive proximity as policy.",
+        pattern:"\\b(stalk|harass|harassment|follow(ed)?|dox|blackmail|intimidat|creep|pester)\\b",
+        weight:20, enabled:true },
+      { id: uid(), title:"The Coercion Statute", domain:"control",
+        description:"Coercion, control, pressure, force, cornering, ultimatums — consent treated as a nuisance.",
+        pattern:"\\b(coerc|control|force|pressur(e|ed)|ultimatum|corner(ed)?|duress|compel)\\b",
+        weight:18, enabled:true },
+      { id: uid(), title:"The Gaslighting Article", domain:"psychological",
+        description:"Reality distortion; undermining perception; epistemic corrosion — the slow theft of certainty.",
+        pattern:"\\b(gaslight|made me doubt|crazy|insane|imagining|overreact|reality|delusional)\\b",
+        weight:18, enabled:true },
+      { id: uid(), title:"The Epistemic Sabotage Provision", domain:"epistemic",
+        description:"Strategic obfuscation, misrepresentation, narrative laundering — weaponising ambiguity to win by fog.",
+        pattern:"\\b(obfuscat|misrepresent|spin|rewrite history|false narrative|distort|selective|half[- ]?truth)\\b",
+        weight:16, enabled:true },
+      { id: uid(), title:"The Betrayal Addendum", domain:"betrayal",
+        description:"Betrayal, cheating, double-crossing, backstabbing — loyalty performed as theatre, not principle.",
+        pattern:"\\b(betray|cheat|infidel|backstab|snake|two[- ]?faced|double[- ]?cross)\\b",
+        weight:16, enabled:true },
+      { id: uid(), title:"The Reputational Vandalism Act", domain:"reputation",
+        description:"Smears, rumours, character assassination — a defenestration of credibility.",
+        pattern:"\\b(smear|rumou?r|slander|defam|character assass|trash talk|badmouth|expose)\\b",
+        weight:16, enabled:true },
+      { id: uid(), title:"The Sabotage Ordinance", domain:"sabotage",
+        description:"Undermining, blocking, derailing, stonewalling — quiet violence against momentum.",
+        pattern:"\\b(sabotage|undermin|ruin(ed)?|derail|block(ed)?|stonewall|suppress)\\b",
+        weight:14, enabled:true },
+      { id: uid(), title:"The Public Humiliation Clause", domain:"humiliation",
+        description:"Mockery, shame, ridicule, humiliation — social predation disguised as humour.",
+        pattern:"\\b(humiliat|mock|shame|embarrass|ridicul|humiliate|belittle)\\b",
+        weight:12, enabled:true },
+      { id: uid(), title:"The Boundary Violation Doctrine", domain:"boundary-violation",
+        description:"Disregard for boundaries, consent, privacy — entitlement in motion.",
+        pattern:"\\b(boundar(y|ies)|privacy|consent|violat|overstep|inappropriate|intrus)\\b",
+        weight:14, enabled:true },
+      { id: uid(), title:"The Exploitation & Instrumentalisation Statute", domain:"exploitation",
+        description:"Using people as objects — moral parasitism; extracting labour, affection, or advantage without reciprocity.",
+        pattern:"\\b(exploit|use(d)? me|instrumentaliz|take advantage|parasite|leech)\\b",
+        weight:15, enabled:true },
+      { id: uid(), title:"The Financial Injury Provision", domain:"financial",
+        description:"Fraud, theft, extortion, monetary harm — the ledger bleeds.",
+        pattern:"\\b(steal|stole|fraud|scam|money|debt|extort|owe|embezzle)\\b",
+        weight:16, enabled:true },
+      { id: uid(), title:"The Discrimination Ban", domain:"discrimination",
+        description:"Bigotry, discrimination, contempt for difference — cruelty with ideology.",
+        pattern:"\\b(racist|sexist|misogyn|bigot|homophob|transphob|ableist|discriminat)\\b",
+        weight:14, enabled:true },
+      { id: uid(), title:"The Abandonment Note", domain:"abandonment",
+        description:"Ghosting, abandonment, discarding — disappearance as a weapon.",
+        pattern:"\\b(abandon|ghost|left me|discard|vanish(ed)?|no reply)\\b",
+        weight:10, enabled:true }
     ];
   }
 
-  // ---------------- Severity + Relationship ----------------
-  const severityBase = {
-    "Minor": 18,
-    "Notable": 35,
-    "Grievous": 58,
-    "Catastrophic": 78,
-  };
-  const relationshipMod = {
-    "Reconciled": -6,
-    "Civil": -2,
-    "Unknown": 0,
-    "Strained": +5,
-    "No Contact": +9,
-    "Active Hostility": +12,
-  };
+  // ---------------- Threat Engine ----------------
+  function compileRule(rule){
+    try{ return new RegExp(rule.pattern, "i"); }catch{ return null; }
+  }
+
+  function categoryScore(categories){
+    if (!Array.isArray(categories) || !categories.length) return 0;
+    // Each category contributes a small base; multiplier controls bite.
+    const basePer = 4.5;
+    return (categories.length * basePer) * (cal.multipliers.categories ?? 1);
+  }
+
+  function intensityScore(text){
+    const t = normalize(text);
+    const markers = [
+      "always","never","constantly","relentless","every time","months","years","daily","weekly",
+      "obsessed","unhinged","stalking","campaign","systematic","chronic"
+    ];
+    let hits = 0;
+    for (const m of markers){
+      if (t.includes(m)) hits++;
+    }
+    const raw = Math.min(16, hits * 2.2);
+    return raw * (cal.multipliers.intensity ?? 1);
+  }
 
   function threatEmoji(score){
     if (score >= 92) return "🔱";
-    if (score >= 82) return "🗡️";
-    if (score >= 72) return "🦂";
-    if (score >= 62) return "🦀";
-    if (score >= 50) return "🍅";
-    if (score >= 35) return "🥔";
-    if (score >= 20) return "🫧";
+    if (score >= 84) return "🗡️";
+    if (score >= 74) return "🦂";
+    if (score >= 64) return "🦀";
+    if (score >= 52) return "🍅";
+    if (score >= 38) return "🥔";
+    if (score >= 22) return "🫧";
     return "🕊️";
   }
 
   function verdictTagClass(v){
     const x = normalize(v);
-    if (x.includes("irredeemable") || x.includes("exiled") || x.includes("sentenced") || x.includes("guilty")) return "bad";
+    if (x.includes("irredeemable") || x.includes("exiled") || x.includes("sentenced") || x.includes("guilty") || x.includes("cancelled") || x.includes("non grata") || x.includes("condemned")) return "bad";
     if (x.includes("under review")) return "warn";
     if (x.includes("acquitted") || x.includes("pardon")) return "good";
     return "";
   }
+
   function severityTagClass(v){
     const x = normalize(v);
     if (x.includes("catastrophic") || x.includes("grievous")) return "bad";
@@ -1355,121 +1638,174 @@
     return "";
   }
 
-  // ---------------- Rule Engine (Edicts) ----------------
-  function compileRule(rule){
-    try{
-      return new RegExp(rule.pattern, "i");
-    }catch{
-      return null;
-    }
-  }
-
   function computeThreat(entry){
-    const base = severityBase[entry.severity] ?? 35;
-    const rel = relationshipMod[entry.relationship] ?? 0;
+    const base = (cal.severityBase?.[entry.severity] ?? 35);
+    const rel = (cal.relationshipMod?.[entry.relationship] ?? 0);
 
-    const text = `${entry.offence} ${entry.commentary || ""}`.toLowerCase();
+    const text = `${entry.offence || ""} ${entry.commentary || ""}`.toLowerCase();
 
-    let ruleScore = 0;
+    let rulePoints = 0;
     const hits = [];
-
     for (const r of rules){
       if (!r.enabled) continue;
       const rx = compileRule(r);
       if (!rx) continue;
       if (rx.test(text)){
-        ruleScore += (Number(r.weight) || 0);
-        hits.push(r.title);
+        rulePoints += (Number(r.weight) || 0);
+        hits.push(`${r.title} [${r.domain}]`);
       }
     }
+    rulePoints *= (cal.multipliers.rules ?? 1);
 
-    const intensity = (text.match(/(always|never|constantly|relentless|every time|months|years|daily|weekly)/g) || []).length;
-    const intensityBonus = Math.min(12, intensity * 2);
+    const catPts = categoryScore(entry.categories);
+    const intPts = intensityScore(text);
 
-    const raw = base + rel + ruleScore + intensityBonus;
+    // Raw points then soft-capped to 0–100 via saturating curve
+    const raw = base + rel + rulePoints + catPts + intPts;
+    const score = clamp(Math.round(100 * (1 - Math.exp(-raw / 70))), 0, 100);
 
-    const soft = Math.round(100 * (1 - Math.exp(-raw / 70)));
-    const catastrophicBoost = entry.severity === "Catastrophic" ? 6 : 0;
-
-    const score = clamp(soft + catastrophicBoost, 0, 100);
-    return { score, hits, raw: Math.round(raw) };
+    return {
+      score,
+      raw: Math.round(raw),
+      breakdown: { base, rel, rulePoints: Math.round(rulePoints), catPts: Math.round(catPts), intPts: Math.round(intPts) },
+      hits
+    };
   }
 
   // ---------------- Persistence ----------------
-  function saveEntries(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    count.textContent = String(entries.length);
-  }
-  function saveRules(){
-    localStorage.setItem(RULES_KEY, JSON.stringify(rules));
-  }
+  function saveEntries(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
+  function saveRules(){ localStorage.setItem(RULES_KEY, JSON.stringify(rules)); }
 
   function seedEntries(){
     return [{
       id: uid(),
       name: "Example Person",
-      offence: "Persistent gaslighting + sabotage of my plans (constantly).",
+      offence: "Epistemic sabotage + gaslighting + reputational vandalism (systematic).",
       date: "",
+      categories: ["Psychological","Reputational","Social"],
       relationship: "No Contact",
       verdict: "Sentenced to Irrelevance",
-      commentary: "An object lesson in how not to treat a mind you cannot control.",
+      commentary: "An object lesson: cruelty with a vocabulary.",
       severity: "Grievous",
-      createdAt: Date.now() - 86400000 * 21,
-      updatedAt: Date.now() - 86400000 * 21,
+      createdAt: Date.now() - 86400000 * 17,
+      updatedAt: Date.now() - 86400000 * 17
     }];
   }
 
   function loadAll(){
+    loadCalibration();
+
     try{
       const raw = localStorage.getItem(STORAGE_KEY);
       entries = raw ? JSON.parse(raw) : seedEntries();
-    }catch{
-      entries = seedEntries();
-    }
+    }catch{ entries = seedEntries(); }
 
     try{
       const rr = localStorage.getItem(RULES_KEY);
       rules = rr ? JSON.parse(rr) : defaultRules();
-    }catch{
-      rules = defaultRules();
-    }
+    }catch{ rules = defaultRules(); }
 
-    count.textContent = String(entries.length);
+    // Back-compat: ensure categories field exists
+    entries = entries.map(e => ({ categories: [], ...e, categories: Array.isArray(e.categories) ? e.categories : [] }));
+
+    countEl.textContent = String(entries.length);
+    totalEl.textContent = String(entries.length);
   }
 
-  // ---------------- Sorting / Filtering ----------------
-  function bySort(a, b){
-    const dir = sortDir === "asc" ? 1 : -1;
-
-    const ta = computeThreat(a).score;
-    const tb = computeThreat(b).score;
-
-    if (sortKey === "threat" || sortKey === "rank"){
-      return (ta - tb) * dir;
+  // ---------------- Populate selects ----------------
+  function fillSelect(selectEl, items, includeAll=false, allLabel="All"){
+    selectEl.innerHTML = "";
+    if (includeAll){
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = allLabel;
+      selectEl.appendChild(opt);
     }
-    if (sortKey === "signals"){
-      const ha = computeThreat(a).hits.length;
-      const hb = computeThreat(b).hits.length;
-      return (ha - hb) * dir;
+    for (const it of items){
+      const opt = document.createElement("option");
+      opt.value = it;
+      opt.textContent = it;
+      selectEl.appendChild(opt);
     }
-
-    const va = (a[sortKey] ?? "");
-    const vb = (b[sortKey] ?? "");
-
-    if (sortKey === "date"){
-      const da = va ? Date.parse(va) : NaN;
-      const db = vb ? Date.parse(vb) : NaN;
-      if (isNaN(da) && isNaN(db)) return (a.updatedAt - b.updatedAt) * dir;
-      if (isNaN(da)) return 1;
-      if (isNaN(db)) return -1;
-      return (da - db) * dir;
-    }
-
-    return va.toString().localeCompare(vb.toString(), undefined, {numeric:true, sensitivity:"base"}) * dir;
   }
 
+  function fillDomainSelect(selectEl){
+    selectEl.innerHTML = "";
+    for (const d of DOMAINS){
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = d;
+      selectEl.appendChild(opt);
+    }
+  }
+
+  function fillOrderModes(){
+    orderModeEl.innerHTML = "";
+    for (const m of ORDER_MODES){
+      const opt = document.createElement("option");
+      opt.value = m.value;
+      opt.textContent = m.label;
+      orderModeEl.appendChild(opt);
+    }
+  }
+
+  // ---------------- Categories UI ----------------
+  let editorCats = new Set();
+  function renderCatChips(){
+    catChips.innerHTML = "";
+    for (const c of CATEGORIES){
+      const chip = document.createElement("div");
+      chip.className = "catChip" + (editorCats.has(c) ? " on" : "");
+      chip.textContent = c;
+      chip.addEventListener("click", () => {
+        if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
+        if (editorCats.has(c)) editorCats.delete(c); else editorCats.add(c);
+        renderCatChips();
+      });
+      catChips.appendChild(chip);
+    }
+  }
+
+  // ---------------- A–Z bar ----------------
+  function renderAZBar(){
+    azbar.innerHTML = "";
+
+    const makeBtn = (label, value) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "azbtn" + ((letterFilter === value) ? " active" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        letterFilter = value;
+        // If user clicks ALL, also allow "no order" as requested
+        if (value === "") viewLetterEl.textContent = "ALL";
+        else viewLetterEl.textContent = value;
+
+        renderTable();
+        renderAZBar();
+      });
+      return b;
+    };
+
+    azbar.appendChild(makeBtn("ALL", ""));
+
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    for (const ch of alphabet){
+      azbar.appendChild(makeBtn(ch, ch));
+    }
+  }
+
+  // ---------------- Filtering / Ordering ----------------
   function applyFilters(list){
     let out = [...list];
+
+    if (letterFilter){
+      out = out.filter(e => {
+        const n = (e.name || "").trim();
+        if (!n) return false;
+        return n[0].toUpperCase() === letterFilter;
+      });
+    }
 
     if (filterVerdict){
       out = out.filter(e => normalize(e.verdict) === normalize(filterVerdict));
@@ -1478,40 +1814,518 @@
     if (searchText){
       const q = normalize(searchText);
       out = out.filter(e => {
-        const hay = [e.name,e.offence,e.date,e.relationship,e.verdict,e.commentary,e.severity].map(normalize).join(" • ");
+        const threat = computeThreat(e);
+        const hay = [
+          e.name, e.offence, e.date, e.relationship, e.verdict, e.commentary, e.severity,
+          (e.categories || []).join(" "),
+          threat.hits.join(" ")
+        ].map(normalize).join(" • ");
         return hay.includes(q);
       });
     }
 
-    out.sort(bySort);
     return out;
   }
 
-  function updateSortIndicators(){
-    document.querySelectorAll("thead th .sort").forEach(el => el.textContent = "");
-    const el = $("sort-" + sortKey);
-    if (el) el.textContent = (sortDir === "asc") ? "↑" : "↓";
-  }
+  function applyOrdering(list){
+    const out = [...list];
 
-  function setSort(key){
-    if (sortKey === key){
-      sortDir = (sortDir === "asc") ? "desc" : "asc";
-    } else {
-      sortKey = key;
-      sortDir = (key === "rank" || key === "threat") ? "desc" : "asc";
+    if (orderMode === "none"){
+      // Keep as-entered order (entries array order)
+      return out;
     }
-    renderTable();
+
+    if (orderMode === "rank_desc" || orderMode === "rank_asc"){
+      out.sort((a,b) => computeThreat(a).score - computeThreat(b).score);
+      if (orderMode === "rank_desc") out.reverse();
+      return out;
+    }
+
+    if (orderMode === "name_asc" || orderMode === "name_desc"){
+      out.sort((a,b) => (a.name || "").localeCompare(b.name || "", undefined, {numeric:true, sensitivity:"base"}));
+      if (orderMode === "name_desc") out.reverse();
+      return out;
+    }
+
+    if (orderMode === "date_desc" || orderMode === "date_asc"){
+      out.sort((a,b) => {
+        const da = a.date ? Date.parse(a.date) : NaN;
+        const db = b.date ? Date.parse(b.date) : NaN;
+        if (isNaN(da) && isNaN(db)) return (a.updatedAt - b.updatedAt);
+        if (isNaN(da)) return 1;
+        if (isNaN(db)) return -1;
+        return da - db;
+      });
+      if (orderMode === "date_desc") out.reverse();
+      return out;
+    }
+
+    return out;
   }
 
-  function applySortPreset(v){
-    if (v === "rank_desc"){ sortKey="rank"; sortDir="desc"; }
-    if (v === "date_desc"){ sortKey="date"; sortDir="desc"; }
-    if (v === "name_asc"){ sortKey="name"; sortDir="asc"; }
-    if (v === "verdict_asc"){ sortKey="verdict"; sortDir="asc"; }
-    renderTable();
+  // ---------------- Inline editing ----------------
+  function makeCellEditor(td, opts){
+    // opts: { type: "text"|"date"|"select"|"textarea"|"categories", value, onSave, choices? }
+    td.innerHTML = "";
+
+    if (opts.type === "textarea"){
+      const ta = document.createElement("textarea");
+      ta.value = opts.value || "";
+      ta.style.minHeight = "76px";
+      td.appendChild(ta);
+      ta.focus();
+
+      const save = () => opts.onSave(ta.value);
+      ta.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)){ e.preventDefault(); save(); }
+        if (e.key === "Escape"){ renderTable(); }
+      });
+      ta.addEventListener("blur", save);
+      return;
+    }
+
+    if (opts.type === "select"){
+      const s = document.createElement("select");
+      for (const ch of (opts.choices || [])){
+        const o = document.createElement("option");
+        o.value = ch;
+        o.textContent = ch;
+        s.appendChild(o);
+      }
+      s.value = opts.value || "";
+      td.appendChild(s);
+      s.focus();
+      const save = () => opts.onSave(s.value);
+      s.addEventListener("change", save);
+      s.addEventListener("blur", save);
+      s.addEventListener("keydown", (e) => {
+        if (e.key === "Escape"){ renderTable(); }
+      });
+      return;
+    }
+
+    if (opts.type === "date"){
+      const i = document.createElement("input");
+      i.type = "date";
+      i.value = opts.value || "";
+      td.appendChild(i);
+      i.focus();
+      const save = () => opts.onSave(i.value || "");
+      i.addEventListener("change", save);
+      i.addEventListener("blur", save);
+      i.addEventListener("keydown", (e) => {
+        if (e.key === "Escape"){ renderTable(); }
+      });
+      return;
+    }
+
+    if (opts.type === "categories"){
+      // inline multi-toggle using prompt for speed + clarity
+      const current = Array.isArray(opts.value) ? opts.value : [];
+      const input = prompt(
+        "Edit subcategories (comma-separated). Available:\n" + CATEGORIES.join(", ") + "\n\nCurrent:\n" + current.join(", "),
+        current.join(", ")
+      );
+      if (input === null){ renderTable(); return; }
+      const wanted = input.split(",").map(x => x.trim()).filter(Boolean);
+      // keep only known categories, but allow custom labels too
+      opts.onSave(wanted);
+      return;
+    }
+
+    // default text
+    const i = document.createElement("input");
+    i.type = "text";
+    i.value = opts.value || "";
+    td.appendChild(i);
+    i.focus();
+    const save = () => opts.onSave(i.value);
+    i.addEventListener("keydown", (e) => {
+      if (e.key === "Enter"){ e.preventDefault(); save(); }
+      if (e.key === "Escape"){ renderTable(); }
+    });
+    i.addEventListener("blur", save);
   }
 
-  // ---------------- Drafting Mode ----------------
+  function cellValueDisplay(value){
+    const v = (value ?? "").toString().trim();
+    return v || "—";
+  }
+
+  // ---------------- Render: Table ----------------
+  function tdTag(text, cls=""){
+    const td = document.createElement("td");
+    const v = (text ?? "").toString().trim() || "—";
+    const span = document.createElement("span");
+    span.className = `tag ${cls}`.trim();
+    span.textContent = v;
+    td.appendChild(span);
+    return td;
+  }
+
+  function tdThreat(score){
+    const td = document.createElement("td");
+    const emoji = threatEmoji(score);
+    const cls = score >= 72 ? "bad" : score >= 45 ? "warn" : "good";
+    const span = document.createElement("span");
+    span.className = `tag ${cls}`;
+    span.textContent = `${emoji} ${score}%`;
+    td.appendChild(span);
+    return td;
+  }
+
+  function tdHits(hits){
+    const td = document.createElement("td");
+    if (!hits.length){
+      td.innerHTML = `<span class="mono">—</span>`;
+      return td;
+    }
+    const short = hits.slice(0,2).join(" • ") + (hits.length > 2 ? ` • +${hits.length-2}` : "");
+    td.innerHTML = `<span class="mono">${escapeHtml(short)}</span>`;
+    return td;
+  }
+
+  function renderTable(){
+    const locked = !sessionUnlocked();
+    setLockedUI(locked);
+
+    const filtered = applyFilters(entries);
+    const ordered = applyOrdering(filtered);
+
+    // rank within the currently visible set (by threat desc)
+    const ranked = [...filtered].sort((a,b) => computeThreat(b).score - computeThreat(a).score);
+    const rankMap = new Map();
+    ranked.forEach((e, i) => rankMap.set(e.id, i+1));
+
+    tbody.innerHTML = "";
+
+    for (const e of ordered){
+      const tr = document.createElement("tr");
+
+      const t = computeThreat(e);
+      const rank = rankMap.get(e.id) ?? "—";
+      const rankEmoji = threatEmoji(t.score);
+
+      // Rank
+      const tdRank = document.createElement("td");
+      tdRank.innerHTML = `<span class="mono">${escapeHtml(String(rank))}</span> <span class="mono">${escapeHtml(rankEmoji)}</span>`;
+      tr.appendChild(tdRank);
+
+      // Threat
+      tr.appendChild(tdThreat(t.score));
+
+      // Name (editable)
+      tr.appendChild(makeEditableCell(e.id, "name", e.name, "text", locked));
+
+      // Offence (editable)
+      tr.appendChild(makeEditableCell(e.id, "offence", e.offence, "text", locked));
+
+      // Date (editable date)  <-- FIXED
+      tr.appendChild(makeEditableCell(e.id, "date", e.date || "", "date", locked));
+
+      // Categories (editable)
+      const catsText = (e.categories && e.categories.length) ? e.categories.join(" · ") : "—";
+      tr.appendChild(makeEditableCell(e.id, "categories", catsText, "categories", locked, e.categories));
+
+      // Relationship (editable select)
+      tr.appendChild(makeEditableCell(e.id, "relationship", e.relationship, "select", locked, null, RELATIONSHIPS, (v) => v));
+
+      // Verdict (editable select)
+      tr.appendChild(makeEditableCell(e.id, "verdict", e.verdict, "select", locked, null, VERDICTS, (v) => v, verdictTagClass(e.verdict)));
+
+      // Commentary (editable textarea)
+      tr.appendChild(makeEditableCell(e.id, "commentary", e.commentary || "", "textarea", locked));
+
+      // Severity (editable select)
+      tr.appendChild(makeEditableCell(e.id, "severity", e.severity, "select", locked, null, SEVERITIES, (v) => v, severityTagClass(e.severity)));
+
+      // Edict hits
+      tr.appendChild(tdHits(t.hits));
+
+      // Actions
+      const actions = document.createElement("td");
+      actions.className = "cellActions";
+
+      const dossierBtn = document.createElement("button");
+      dossierBtn.type = "button";
+      dossierBtn.className = "ghost";
+      dossierBtn.textContent = "Dossier";
+      dossierBtn.addEventListener("click", () => openDossier(e.id));
+      actions.appendChild(dossierBtn);
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "ghost";
+      editBtn.textContent = "Edit";
+      editBtn.setAttribute("data-edit-action", "1");
+      editBtn.addEventListener("click", () => startEdit(e.id));
+      actions.appendChild(editBtn);
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "danger";
+      delBtn.textContent = "Delete";
+      delBtn.setAttribute("data-edit-action", "1");
+      delBtn.addEventListener("click", () => removeEntry(e.id));
+      actions.appendChild(delBtn);
+
+      tr.appendChild(actions);
+      tbody.appendChild(tr);
+    }
+
+    showingEl.textContent = String(ordered.length);
+    totalEl.textContent = String(entries.length);
+    countEl.textContent = String(entries.length);
+    viewLetterEl.textContent = letterFilter || "ALL";
+    saveEntries();
+  }
+
+  function makeEditableCell(entryId, field, displayValue, editorType, locked, rawValue=null, choices=null, normalizer=null, tagClass=""){
+    const td = document.createElement("td");
+
+    // Display mode
+    if (editorType === "select"){
+      // show as tag for aesthetics
+      const cls = tagClass || "";
+      const span = document.createElement("span");
+      span.className = `tag ${cls}`.trim();
+      span.textContent = cellValueDisplay(displayValue);
+      td.appendChild(span);
+    } else if (field === "categories"){
+      const txt = (rawValue && rawValue.length) ? rawValue : [];
+      if (!txt.length){
+        td.innerHTML = `<span class="mono">—</span>`;
+      } else {
+        // show first few as tags
+        const wrap = document.createElement("div");
+        wrap.style.display = "flex";
+        wrap.style.gap = "8px";
+        wrap.style.flexWrap = "wrap";
+        txt.slice(0,3).forEach(c => {
+          const s = document.createElement("span");
+          s.className = "tag";
+          s.textContent = c;
+          wrap.appendChild(s);
+        });
+        if (txt.length > 3){
+          const s = document.createElement("span");
+          s.className = "tag";
+          s.textContent = `+${txt.length-3}`;
+          wrap.appendChild(s);
+        }
+        td.appendChild(wrap);
+      }
+    } else if (editorType === "textarea"){
+      const v = (displayValue ?? "").toString().trim();
+      td.textContent = v || "—";
+      if (!v) td.classList.add("muted");
+    } else {
+      td.textContent = cellValueDisplay(displayValue);
+      if (!((displayValue ?? "").toString().trim())) td.classList.add("muted");
+    }
+
+    if (locked){
+      return td;
+    }
+
+    // Click-to-edit
+    td.style.cursor = "pointer";
+    td.title = "Click to edit";
+    td.addEventListener("click", () => {
+      const e = entries.find(x => x.id === entryId);
+      if (!e) return;
+
+      const onSave = (val) => {
+        if (!sessionUnlocked()){ toastify("Locked."); return; }
+
+        if (field === "categories"){
+          e.categories = Array.isArray(val) ? val : [];
+        } else {
+          const v = normalizer ? normalizer(val) : val;
+          e[field] = (v ?? "").toString();
+        }
+
+        e.updatedAt = Date.now();
+        saveEntries();
+        renderTable();
+        toastify("Updated.");
+      };
+
+      if (field === "categories"){
+        makeCellEditor(td, { type: "categories", value: e.categories || [], onSave });
+        return;
+      }
+
+      const value = (field === "date") ? (e.date || "") : (e[field] ?? "");
+      const opts = {
+        type: editorType,
+        value: value,
+        choices: choices || [],
+        onSave
+      };
+      makeCellEditor(td, opts);
+    });
+
+    return td;
+  }
+
+  // ---------------- Editor ops ----------------
+  function clearForm(){
+    form.reset();
+    editingIdEl.value = "";
+    editorCats = new Set();
+    renderCatChips();
+    saveBtn.textContent = "Add to Register";
+    nameEl.focus();
+  }
+
+  function startEdit(id){
+    if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
+    const e = entries.find(x => x.id === id);
+    if (!e) return;
+
+    nameEl.value = e.name || "";
+    offenceEl.value = e.offence || "";
+    dateEl.value = e.date || "";
+    relationshipEl.value = e.relationship || "Unknown";
+    verdictEl.value = e.verdict || "Under Review";
+    severityEl.value = e.severity || "Notable";
+    commentaryEl.value = e.commentary || "";
+    editorCats = new Set(Array.isArray(e.categories) ? e.categories : []);
+    renderCatChips();
+
+    editingIdEl.value = id;
+    saveBtn.textContent = "Save Changes";
+    toastify("Editing in left panel.");
+    nameEl.focus();
+  }
+
+  function upsertFromForm(){
+    if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
+
+    const payload = {
+      name: nameEl.value.trim(),
+      offence: offenceEl.value.trim(),
+      date: dateEl.value || "",
+      categories: [...editorCats],
+      relationship: relationshipEl.value,
+      verdict: verdictEl.value,
+      severity: severityEl.value,
+      commentary: commentaryEl.value.trim()
+    };
+
+    if (!payload.name || !payload.offence){
+      toastify("Name + offence required.");
+      return;
+    }
+
+    const now = Date.now();
+    const id = editingIdEl.value;
+
+    if (id){
+      const idx = entries.findIndex(e => e.id === id);
+      if (idx >= 0){
+        entries[idx] = { ...entries[idx], ...payload, updatedAt: now };
+        saveEntries();
+        renderTable();
+        toastify("Updated.");
+        clearForm();
+        return;
+      }
+    }
+
+    entries.unshift({
+      id: uid(),
+      ...payload,
+      createdAt: now,
+      updatedAt: now
+    });
+
+    saveEntries();
+    renderTable();
+    toastify("Added.");
+    clearForm();
+  }
+
+  function removeEntry(id){
+    if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
+    const e = entries.find(x => x.id === id);
+    if (!e) return;
+    const ok = confirm(`Delete entry for "${e.name}"? This cannot be undone.`);
+    if (!ok) return;
+    entries = entries.filter(x => x.id !== id);
+    saveEntries();
+    renderTable();
+    toastify("Deleted.");
+    if (editingIdEl.value === id) clearForm();
+  }
+
+  function wipeAll(){
+    if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
+    const ok = confirm("Wipe the entire Register from this browser?");
+    if (!ok) return;
+    entries = [];
+    saveEntries();
+    renderTable();
+    toastify("Register wiped.");
+    clearForm();
+  }
+
+  // ---------------- Modal dossier ----------------
+  let currentDossierId = null;
+
+  function openDossier(id){
+    const e = entries.find(x => x.id === id);
+    if (!e) return;
+    currentDossierId = id;
+
+    const t = computeThreat(e);
+    const emoji = threatEmoji(t.score);
+
+    dossierTitle.textContent = e.name || "Dossier";
+    dossierSub.textContent = `${e.date ? `Date: ${e.date}` : "Date: —"} • Severity: ${e.severity || "—"} • Rank recalculates`;
+
+    dossierThreat.textContent = `${emoji} ${t.score}%`;
+    dossierThreatExplain.textContent =
+      `Raw: ${t.raw}  •  base ${t.breakdown.base} + rel ${t.breakdown.rel} + edicts ${t.breakdown.rulePoints} + cats ${t.breakdown.catPts} + intensity ${t.breakdown.intPts}.`;
+
+    dossierVerdict.textContent = `Verdict: ${e.verdict || "—"}`;
+    dossierRel.textContent = `Relationship: ${e.relationship || "—"}`;
+
+    dossierOffence.textContent = e.offence || "—";
+    dossierCommentary.textContent = e.commentary || "—";
+    dossierCats.textContent = (e.categories && e.categories.length) ? e.categories.join(" · ") : "—";
+    dossierHits.textContent = t.hits.length ? t.hits.join("\n") : "—";
+
+    modalBackdrop.style.display = "flex";
+    modalBackdrop.setAttribute("aria-hidden","false");
+
+    // button visibility based on lock
+    const locked = !sessionUnlocked();
+    dossierEditBtn.disabled = locked;
+    dossierDeleteBtn.disabled = locked;
+  }
+
+  function closeDossier(){
+    modalBackdrop.style.display = "none";
+    modalBackdrop.setAttribute("aria-hidden","true");
+    currentDossierId = null;
+  }
+
+  dossierEditBtn.addEventListener("click", () => {
+    if (!currentDossierId) return;
+    startEdit(currentDossierId);
+    closeDossier();
+  });
+
+  dossierDeleteBtn.addEventListener("click", () => {
+    if (!currentDossierId) return;
+    const id = currentDossierId;
+    closeDossier();
+    removeEntry(id);
+  });
+
+  // ---------------- Edicts Drafting Mode ----------------
   const STOP = new Set([
     "the","a","an","and","or","to","of","in","on","for","with","without","by","at","from","as",
     "this","that","these","those","it","its","is","are","was","were","be","been","being",
@@ -1519,28 +2333,59 @@
     "he","him","his","she","her","hers","them","then","than","but","so","just","very","really"
   ]);
 
-  function extractKeywords(text){
-    const raw = (text || "")
+  // Small “elevations” map: plain → higher-register synonyms
+  const ELEVATE = {
+    "lie": ["falsehood","prevarication","deception"],
+    "lies": ["falsehoods","prevarications","deceptions"],
+    "gaslighting": ["epistemic erosion","reality distortion","perceptual sabotage"],
+    "humiliation": ["public shaming","social degradation","ridicule"],
+    "sabotage": ["undermining","derailment","strategic obstruction"],
+    "threat": ["menace","intimidation","coercive warning"],
+    "blackmail": ["extortion","coercion","leverage"],
+    "rumour": ["slander","defamation","smear"],
+    "bully": ["harass","intimidate","victimise"],
+    "use": ["exploit","instrumentalise","extract from"]
+  };
+
+  function tokenize(text){
+    return (text || "")
       .toLowerCase()
       .replace(/[^a-z0-9\s'-]/g, " ")
       .split(/\s+/)
       .map(w => w.trim())
-      .filter(Boolean)
+      .filter(Boolean);
+  }
+
+  function extractKeywords(text){
+    const words = tokenize(text)
       .filter(w => w.length >= 4)
       .filter(w => !STOP.has(w));
 
-    // mild stemming-ish: prefer distinct tokens
     const uniq = [];
     const seen = new Set();
-    for (const w of raw){
+    for (const w of words){
       const key = w.replace(/(ing|ed|ly|es|s)$/,"");
       if (key.length < 3) continue;
       if (seen.has(key)) continue;
       seen.add(key);
       uniq.push(w);
-      if (uniq.length >= 10) break;
+      if (uniq.length >= 12) break;
     }
     return uniq;
+  }
+
+  function elevateKeywords(keys){
+    const out = new Set(keys);
+    for (const k of keys){
+      const expansions = ELEVATE[k];
+      if (expansions) expansions.forEach(x => out.add(x));
+    }
+    // also add a few high-register staples if relevant
+    const txt = keys.join(" ");
+    if (txt.includes("undermin")) out.add("subvert");
+    if (txt.includes("control")) out.add("domination");
+    if (txt.includes("boundary")) out.add("entitlement");
+    return [...out].slice(0, 20);
   }
 
   function keywordsToRegex(keys){
@@ -1551,25 +2396,26 @@
 
   function updateDraftPreview(){
     const keys = extractKeywords(draftText.value);
-    const rx = keywordsToRegex(keys);
+    const elevated = elevateKeywords(keys);
+    const rx = keywordsToRegex(elevated);
     draftOut.textContent = rx || "—";
-    return { keys, rx };
+    return { keys, elevated, rx };
   }
 
   function createRuleFromDraft(){
-    if (!sessionUnlocked()){
-      toastify("Locked. Unlock Edit Mode.");
-      return;
-    }
-    const { keys, rx } = updateDraftPreview();
-    if (!rx){
-      toastify("Draft needs keywords.");
-      return;
-    }
+    if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
+
+    const { elevated, rx } = updateDraftPreview();
+    if (!rx){ toastify("Draft needs substance."); return; }
+
     const title = prompt("Edict title (cursive):", "The New Edict");
     if (!title) return;
-    const desc = prompt("Edict description (italic):", draftText.value.slice(0, 180));
+
+    const descDefault = (draftText.value || "").trim().slice(0, 220);
+    const desc = prompt("Edict description (italic):", descDefault || "Define the harm precisely.");
+
     const w = Number(draftWeight.value || 0);
+    const d = draftDomain.value || "other";
 
     rules.unshift({
       id: uid(),
@@ -1577,12 +2423,13 @@
       description: desc || "",
       pattern: rx,
       weight: isFinite(w) ? w : 0,
-      domain: "drafted",
+      domain: d,
       enabled: true
     });
 
     saveRules();
-    renderAll();
+    renderRules();
+    renderTable();
     toastify("Edict drafted.");
     draftText.value = "";
     draftOut.textContent = "—";
@@ -1622,6 +2469,7 @@
 
       const inputs = document.createElement("div");
       inputs.className = "inputs";
+
       inputs.innerHTML = `
         <div>
           <label>Pattern (regex)</label>
@@ -1629,16 +2477,32 @@
         </div>
         <div>
           <label>Weight</label>
-          <input type="number" step="1" min="-20" max="60" value="${escapeHtml(String(r.weight))}" ${locked ? "disabled" : ""} />
+          <input type="number" step="1" min="-20" max="80" value="${escapeHtml(String(r.weight))}" ${locked ? "disabled" : ""} />
         </div>
-        <div style="display:flex; gap:10px; align-items:end; flex-wrap:wrap;">
-          <button type="button" class="ghost" ${locked ? "disabled" : ""}>Toggle</button>
-          <button type="button" class="danger" ${locked ? "disabled" : ""}>Delete</button>
+        <div>
+          <label>Domain</label>
+          <select ${locked ? "disabled" : ""}></select>
+          <div style="height:10px"></div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" class="ghost" ${locked ? "disabled" : ""}>Toggle</button>
+            <button type="button" class="danger" ${locked ? "disabled" : ""}>Delete</button>
+          </div>
         </div>
       `;
 
       const [patternInput, weightInput] = inputs.querySelectorAll("input");
+      const domainSelect = inputs.querySelector("select");
       const [toggleBtn, deleteBtn] = inputs.querySelectorAll("button");
+
+      // domain options
+      domainSelect.innerHTML = "";
+      for (const d of DOMAINS){
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        domainSelect.appendChild(opt);
+      }
+      domainSelect.value = r.domain || "other";
 
       patternInput.addEventListener("input", () => {
         r.pattern = patternInput.value;
@@ -1652,10 +2516,18 @@
         renderTable();
       });
 
+      domainSelect.addEventListener("change", () => {
+        r.domain = domainSelect.value;
+        saveRules();
+        renderTable();
+        toastify("Domain updated.");
+      });
+
       toggleBtn.addEventListener("click", () => {
         r.enabled = !r.enabled;
         saveRules();
-        renderAll();
+        renderRules();
+        renderTable();
         toastify(r.enabled ? "Edict enabled." : "Edict disabled.");
       });
 
@@ -1664,7 +2536,8 @@
         if (!ok) return;
         rules = rules.filter(x => x.id !== r.id);
         saveRules();
-        renderAll();
+        renderRules();
+        renderTable();
         toastify("Edict deleted.");
       });
 
@@ -1675,15 +2548,13 @@
   }
 
   function addRule(){
-    if (!sessionUnlocked()){
-      toastify("Locked. Unlock Edit Mode.");
-      return;
-    }
+    if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
     const title = prompt("Edict title (cursive):", "The New Edict");
     if (!title) return;
-    const description = prompt("Edict description (italic):", "What harm does this capture?");
+    const description = prompt("Edict description (italic):", "Define the harm. Be exact.");
     const pattern = prompt("Regex pattern (case-insensitive):", "\\b(keyword1|keyword2)\\b");
     if (!pattern) return;
+    const domain = prompt("Domain (choose one):\n" + DOMAINS.join(", "), "other") || "other";
     const weightStr = prompt("Weight (higher = more severe).", "12");
     const weight = Number(weightStr || 0);
 
@@ -1693,300 +2564,35 @@
       description: description || "",
       pattern,
       weight: isFinite(weight) ? weight : 0,
-      domain: "custom",
+      domain,
       enabled: true
     });
 
     saveRules();
-    renderAll();
+    renderRules();
+    renderTable();
     toastify("Edict added.");
   }
 
   function resetRules(){
-    if (!sessionUnlocked()){
-      toastify("Locked. Unlock Edit Mode.");
-      return;
-    }
-    const ok = confirm("Restore default Gabe’s Edicts and Rules? This replaces your current statute book.");
+    if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
+    const ok = confirm("Restore default edicts? This replaces your current statute book.");
     if (!ok) return;
     rules = defaultRules();
     saveRules();
-    renderAll();
-    toastify("Default edicts restored.");
-  }
-
-  // ---------------- Render: Table ----------------
-  function tdText(text, mutedIfEmpty=false, mono=false){
-    const td = document.createElement("td");
-    const v = (text ?? "").toString().trim();
-    td.textContent = v || "—";
-    if (mutedIfEmpty && !v) td.classList.add("muted");
-    if (mono) td.classList.add("mono");
-    return td;
-  }
-  function tdMono(text){
-    const td = document.createElement("td");
-    td.innerHTML = `<span class="mono">${escapeHtml(text)}</span>`;
-    return td;
-  }
-  function tdTag(text, cls=""){
-    const td = document.createElement("td");
-    const v = (text ?? "").toString().trim() || "—";
-    const span = document.createElement("span");
-    span.className = `tag ${cls}`.trim();
-    span.textContent = v;
-    td.appendChild(span);
-    return td;
-  }
-  function tdThreat(score){
-    const td = document.createElement("td");
-    const emoji = threatEmoji(score);
-    const cls = score >= 72 ? "bad" : score >= 45 ? "warn" : "good";
-    const span = document.createElement("span");
-    span.className = `tag ${cls}`;
-    span.textContent = `${emoji} ${score}%`;
-    td.appendChild(span);
-    return td;
-  }
-  function tdHits(hits){
-    const td = document.createElement("td");
-    if (!hits.length){
-      td.innerHTML = `<span class="mono">—</span>`;
-      return td;
-    }
-    const short = hits.slice(0,2).join(" • ") + (hits.length > 2 ? ` • +${hits.length-2}` : "");
-    td.innerHTML = `<span class="mono">${escapeHtml(short)}</span>`;
-    return td;
-  }
-
-  function renderTable(){
-    const filtered = applyFilters(entries);
-    tbody.innerHTML = "";
-
-    // Rank based on highest threat within filtered list
-    const ranked = [...filtered].sort((x,y) => computeThreat(y).score - computeThreat(x).score);
-    const rankMap = new Map();
-    ranked.forEach((e, i) => rankMap.set(e.id, i+1));
-
-    const locked = !sessionUnlocked();
-    setLockedUI(locked);
-
-    for (const e of filtered){
-      const { score, hits } = computeThreat(e);
-      const rank = rankMap.get(e.id) ?? "—";
-
-      const tr = document.createElement("tr");
-
-      tr.appendChild(tdText(String(rank), false, true));
-      tr.appendChild(tdThreat(score));
-      tr.appendChild(tdText(e.name));
-      tr.appendChild(tdText(e.offence));
-      tr.appendChild(tdMono(e.date || "—"));
-      tr.appendChild(tdTag(e.relationship));
-      tr.appendChild(tdTag(e.verdict, verdictTagClass(e.verdict)));
-      tr.appendChild(tdText(e.commentary, true));
-      tr.appendChild(tdTag(e.severity, severityTagClass(e.severity)));
-      tr.appendChild(tdHits(hits));
-
-      const actions = document.createElement("td");
-      actions.className = "cellActions";
-
-      const dossierBtn = document.createElement("button");
-      dossierBtn.textContent = "Dossier";
-      dossierBtn.type = "button";
-      dossierBtn.className = "ghost";
-      dossierBtn.addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        openDossier(e.id);
-      });
-
-      const editBtn = document.createElement("button");
-      editBtn.textContent = "Edit";
-      editBtn.type = "button";
-      editBtn.setAttribute("data-edit-action","1");
-      editBtn.addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        startEdit(e.id);
-      });
-
-      const delBtn = document.createElement("button");
-      delBtn.textContent = "Delete";
-      delBtn.type = "button";
-      delBtn.className = "danger";
-      delBtn.setAttribute("data-edit-action","1");
-      delBtn.addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        removeEntry(e.id);
-      });
-
-      actions.appendChild(dossierBtn);
-      actions.appendChild(editBtn);
-      actions.appendChild(delBtn);
-      tr.appendChild(actions);
-
-      tr.addEventListener("click", () => openDossier(e.id));
-      tbody.appendChild(tr);
-    }
-
-    showing.textContent = String(filtered.length);
-    total.textContent = String(entries.length);
-    sortedBy.textContent = sortKey;
-    sortedDirEl.textContent = sortDir === "asc" ? "↑" : "↓";
-    updateSortIndicators();
-  }
-
-  function renderAll(){
-    saveEntries();
-    saveRules();
     renderRules();
     renderTable();
-  }
-
-  // ---------------- Dossier Modal ----------------
-  function openDossier(id){
-    const e = entries.find(x => x.id === id);
-    if (!e) return;
-
-    const { score, hits, raw } = computeThreat(e);
-    const emoji = threatEmoji(score);
-
-    dossierTitle.textContent = e.name || "Case File";
-    dossierSub.textContent = `${e.date ? `Date: ${e.date}` : "Date: —"} • Severity: ${e.severity} • Rank recalculates automatically`;
-
-    dossierVerdict.textContent = e.verdict || "—";
-    dossierRel.textContent = `Relationship: ${e.relationship || "—"}`;
-
-    dossierThreat.textContent = `${emoji} ${score}%`;
-    dossierEmojiLine.textContent = `Insignia: ${emoji} • Raw pressure: ${raw} (soft-capped to 100)`;
-
-    dossierOffence.textContent = e.offence || "—";
-    dossierCommentary.textContent = e.commentary || "—";
-    dossierHits.textContent = hits.length ? hits.join(" • ") : "—";
-
-    const meta = [
-      `Created: ${new Date(e.createdAt).toLocaleString()}`,
-      `Updated: ${new Date(e.updatedAt).toLocaleString()}`
-    ].join(" • ");
-    dossierMeta.textContent = meta;
-
-    modalBackdrop.style.display = "flex";
-    modalBackdrop.setAttribute("aria-hidden","false");
-  }
-
-  function closeDossier(){
-    modalBackdrop.style.display = "none";
-    modalBackdrop.setAttribute("aria-hidden","true");
-  }
-
-  // ---------------- Editor Ops ----------------
-  function clearForm(){
-    form.reset();
-    editingIdEl.value = "";
-    saveBtn.textContent = "Add to Register";
-    nameEl.focus();
-  }
-
-  function startEdit(id){
-    if (!sessionUnlocked()){
-      toastify("Locked. Unlock Edit Mode.");
-      return;
-    }
-    const e = entries.find(x => x.id === id);
-    if (!e) return;
-
-    nameEl.value = e.name;
-    offenceEl.value = e.offence;
-    dateEl.value = e.date || "";
-    relationshipEl.value = e.relationship;
-    verdictEl.value = e.verdict;
-    severityEl.value = e.severity;
-    commentaryEl.value = e.commentary || "";
-    editingIdEl.value = id;
-
-    saveBtn.textContent = "Save Changes";
-    toastify("Editing mode.");
-    nameEl.focus();
-  }
-
-  function upsertFromForm(){
-    if (!sessionUnlocked()){
-      toastify("Locked. Unlock Edit Mode.");
-      return;
-    }
-
-    const payload = {
-      name: nameEl.value.trim(),
-      offence: offenceEl.value.trim(),
-      date: dateEl.value || "",
-      relationship: relationshipEl.value,
-      verdict: verdictEl.value,
-      severity: severityEl.value,
-      commentary: commentaryEl.value.trim(),
-    };
-
-    if (!payload.name || !payload.offence){
-      toastify("Name + offence required.");
-      return;
-    }
-
-    const now = Date.now();
-    const id = editingIdEl.value;
-
-    if (id){
-      const idx = entries.findIndex(e => e.id === id);
-      if (idx >= 0){
-        entries[idx] = { ...entries[idx], ...payload, updatedAt: now };
-        renderAll();
-        toastify("Updated.");
-        clearForm();
-        return;
-      }
-    }
-
-    entries.unshift({
-      id: uid(),
-      ...payload,
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    renderAll();
-    toastify("Added.");
-    clearForm();
-  }
-
-  function removeEntry(id){
-    if (!sessionUnlocked()){
-      toastify("Locked. Unlock Edit Mode.");
-      return;
-    }
-    const e = entries.find(x => x.id === id);
-    if (!e) return;
-    const ok = confirm(`Delete entry for "${e.name}"? This cannot be undone.`);
-    if (!ok) return;
-    entries = entries.filter(x => x.id !== id);
-    renderAll();
-    toastify("Deleted.");
-    if (editingIdEl.value === id) clearForm();
-  }
-
-  function wipeAll(){
-    if (!sessionUnlocked()){
-      toastify("Locked. Unlock Edit Mode.");
-      return;
-    }
-    const ok = confirm("Wipe the entire Register from this browser?");
-    if (!ok) return;
-    entries = [];
-    renderAll();
-    toastify("Register wiped.");
-    clearForm();
+    toastify("Default edicts restored.");
   }
 
   // ---------------- CSV ----------------
   function toCSV(){
-    const headers = ["Name","Offence Description","Date","Relationship","Verdict","Commentary","Severity"];
-    const rows = entries.map(e => [e.name, e.offence, e.date, e.relationship, e.verdict, e.commentary, e.severity]);
+    const headers = ["Name","Offence","Date","Subcategories","Relationship","Verdict","Commentary","Severity"];
+    const rows = entries.map(e => [
+      e.name, e.offence, e.date,
+      (Array.isArray(e.categories) ? e.categories.join(" | ") : ""),
+      e.relationship, e.verdict, e.commentary, e.severity
+    ]);
     const esc = (v) => {
       const s = (v ?? "").toString();
       if (/[,"\n]/.test(s)) return `"${s.replaceAll('"', '""')}"`;
@@ -2029,9 +2635,9 @@
         i++; continue;
       }
       if (c === "\r"){ i++; continue; }
-
       field += c; i++;
     }
+
     row.push(field);
     if (row.some(x => x.trim() !== "")) out.push(row);
     return out;
@@ -2055,14 +2661,15 @@
         };
 
         const iName = idx("name");
-        const iOff = idx("offence description","offence");
+        const iOff = idx("offence","offence description");
         const iDate = idx("date","date of offence");
+        const iCats = idx("subcategories","categories");
         const iRel = idx("relationship","current relationship");
         const iVer = idx("verdict");
         const iCom = idx("commentary");
         const iSev = idx("severity");
 
-        if (iName < 0 || iOff < 0) throw new Error("CSV must include at least Name and Offence Description columns.");
+        if (iName < 0 || iOff < 0) throw new Error("CSV must include at least Name and Offence columns.");
 
         const now = Date.now();
         const imported = [];
@@ -2073,27 +2680,28 @@
           const offence = (row[iOff] ?? "").trim();
           if (!name || !offence) continue;
 
+          const catsRaw = (row[iCats] ?? "").trim();
+          const cats = catsRaw ? catsRaw.split("|").map(x => x.trim()).filter(Boolean) : [];
+
           imported.push({
             id: uid(),
             name,
             offence,
             date: (row[iDate] ?? "").trim(),
+            categories: cats,
             relationship: (row[iRel] ?? "Unknown").trim() || "Unknown",
             verdict: (row[iVer] ?? "Under Review").trim() || "Under Review",
             commentary: (row[iCom] ?? "").trim(),
             severity: (row[iSev] ?? "Notable").trim() || "Notable",
             createdAt: now,
-            updatedAt: now,
+            updatedAt: now
           });
         }
 
-        if (!imported.length){
-          toastify("No valid rows to import.");
-          return;
-        }
-
+        if (!imported.length){ toastify("No valid rows to import."); return; }
         entries = [...imported, ...entries];
-        renderAll();
+        saveEntries();
+        renderTable();
         toastify(`Imported ${imported.length} rows.`);
       }catch(err){
         toastify("Import failed.");
@@ -2108,14 +2716,14 @@
   clearBtn.addEventListener("click", clearForm);
   wipeBtn.addEventListener("click", wipeAll);
 
-  search.addEventListener("input", () => { searchText = search.value; renderTable(); });
+  searchEl.addEventListener("input", () => { searchText = searchEl.value; renderTable(); });
   filterVerdictEl.addEventListener("change", () => { filterVerdict = filterVerdictEl.value; renderTable(); });
-  sortPreset.addEventListener("change", () => applySortPreset(sortPreset.value));
+  orderModeEl.addEventListener("change", () => { orderMode = orderModeEl.value; renderTable(); });
 
   exportBtn.addEventListener("click", () => {
     const csv = toCSV();
     const stamp = new Date().toISOString().slice(0,10);
-    download(`adversary-register-${stamp}.csv`, csv);
+    download(`gabes-register-${stamp}.csv`, csv);
     toastify("CSV exported.");
   });
 
@@ -2126,46 +2734,36 @@
     fileInput.value = "";
   });
 
-  document.querySelectorAll("thead th[data-key]").forEach(th => {
-    th.addEventListener("click", () => setSort(th.dataset.key));
-  });
-
   unlockBtn.addEventListener("click", unlockAttempt);
   setPassBtn.addEventListener("click", setOrResetPassphrase);
   lockBtn.addEventListener("click", lockNow);
 
   passphrase.addEventListener("keydown", (e) => {
-    if (e.key === "Enter"){
-      e.preventDefault();
-      unlockAttempt();
-    }
+    if (e.key === "Enter"){ e.preventDefault(); unlockAttempt(); }
   });
 
   resetRulesBtn.addEventListener("click", resetRules);
   addRuleBtn.addEventListener("click", addRule);
 
-  // Drafting mode live preview
   draftText.addEventListener("input", updateDraftPreview);
   draftExtractBtn.addEventListener("click", () => {
     if (!sessionUnlocked()){ toastify("Locked. Unlock Edit Mode."); return; }
-    const { keys, rx } = updateDraftPreview();
-    toastify(keys.length ? `Extracted: ${keys.slice(0,5).join(", ")}${keys.length>5?"…":""}` : "No keywords found.");
+    const { elevated, rx } = updateDraftPreview();
+    toastify(elevated.length ? `Elevated: ${elevated.slice(0,6).join(", ")}${elevated.length>6?"…":""}` : "No keywords found.");
     draftOut.textContent = rx || "—";
   });
   draftCreateBtn.addEventListener("click", createRuleFromDraft);
 
-  // Modal controls
-  closeModalBtn.addEventListener("click", closeDossier);
-  modalBackdrop.addEventListener("click", (e) => {
-    if (e.target === modalBackdrop) closeDossier();
-  });
+  resetCalBtn.addEventListener("click", resetCalibration);
 
-  // Keyboard shortcuts
+  closeModalBtn.addEventListener("click", closeDossier);
+  modalBackdrop.addEventListener("click", (e) => { if (e.target === modalBackdrop) closeDossier(); });
+
   document.addEventListener("keydown", (e) => {
     const isK = (e.key || "").toLowerCase() === "k";
     if (isK && (e.ctrlKey || e.metaKey)){
       e.preventDefault();
-      search.focus();
+      searchEl.focus();
       toastify("Search focused.");
     }
     if (e.key === "Escape"){
@@ -2174,13 +2772,57 @@
   });
 
   // ---------------- Boot ----------------
-  loadAll();
-  // ensure defaults exist
-  if (!localStorage.getItem(RULES_KEY)) saveRules();
-  if (!localStorage.getItem(STORAGE_KEY)) saveEntries();
+  function renderAll(){
+    countEl.textContent = String(entries.length);
+    totalEl.textContent = String(entries.length);
+    setLockedUI(!sessionUnlocked());
+    renderCatChips();
+    renderRules();
+    renderAZBar();
+    syncCalibrationUI();
+    renderTable();
+  }
 
-  setLockedUI(!sessionUnlocked());
+  loadAll();
+
+  // fill selects once
+  fillSelect(relationshipEl, RELATIONSHIPS, false);
+  fillSelect(verdictEl, VERDICTS, false);
+  fillSelect(severityEl, SEVERITIES, false);
+
+  fillSelect(filterVerdictEl, VERDICTS, true, "All");
+  fillDomainSelect(draftDomain);
+  fillOrderModes();
+
+  // sensible defaults
+  relationshipEl.value = "Unknown";
+  verdictEl.value = "Under Review";
+  severityEl.value = "Notable";
+  orderModeEl.value = orderMode;
+
+  // categories default
+  editorCats = new Set();
+  renderCatChips();
+
+  // calibration UI
+  syncCalibrationUI();
+  wireCalibrationUI();
+
+  // default draft domain
+  draftDomain.value = "other";
   updateDraftPreview();
+
+  // ensure rules exist
+  if (!localStorage.getItem(RULES_KEY)){
+    rules = defaultRules();
+    saveRules();
+  }
+
+  // Save calibration if missing
+  if (!localStorage.getItem(CAL_KEY)){
+    saveCalibration();
+  }
+
   renderAll();
 })();
 </script>
